@@ -1,20 +1,34 @@
-![LucidGloves](https://cdn.discordapp.com/attachments/785135646082990120/873666310855360582/LucidGlovesBlackwbkgnd.png)
+# FlexiaGloves
 
-# lucidgloves- Firmware and 3D Print Files
-This repo contains the arduino firmware as well as the STL files for Prototypes 3 through 4 of the LucidVR glove. This is a finger tracking glove that allows you to use your hands in VR. Follow along with Lucas_VRTech's developments on his Tiktok page:
-https://www.tiktok.com/@lucas_vrtech
+This is a fork of the popular project [LucidGloves](https://github.com/LucidVR/lucidgloves). This project aims to build a compact and OpenGlove compatible, flex sensor based VR glove. The hardware is a complete departure from the orignal LucidGlove, but the firmware is largely the same and is fully compatible with device API that the OpenGlove Driver provides.
 
-# Support
-Join the LucidVR discord server for assistance:
-https://discord.gg/lucidvr
+# Hardware
+The hardware of this project differs from LucidGlove because it relies on flex sensors instead potentiometers for finger curl tracking.
 
+## Glove parts
+	* 3D printed parts in the hardware folder
+	* 2mm wide nylon zipties | [Amazon](https://www.amazon.com/gp/product/B083ZXC71B)
+	* 0.4mm spring steel wire | [Amazon](https://www.amazon.com/gp/product/B096X52958)
+	* MG90 Servos | [Amazon](https://www.amazon.com/s?k=mg90+servo)
+	* Blue breadboard potentiometers | [Amazon](https://www.amazon.com/HUAREW-Adjustable-Resistance-Potentiometer-Assortment/dp/B0877BKG4R)
+	* ESP32 WROOM Board | [Amazon](https://www.amazon.com/s?k=esp32)
+	* 1000 grit sandpaper | [Amazon](https://www.amazon.com/s?k=1000+grit+sandpaper)
+	* Super Glue | [Amazon](https://www.amazon.com/s?k=super+glue)
+	* 1/2in Velcro strap | [Amazon](https://www.amazon.com/Fasten-Management-Organizer-Reusable-Gripping/dp/B07GTV7PJK)
+	* Iron-on fabric patch | [Amazon](https://www.amazon.com/Bondex-Iron-Patches-X7-Pkg-Black/dp/B005UT628U)
+	* Copper Foil Tape | [Amazon](https://www.amazon.com/gp/product/B09C1ZLFZF)
+    * AdaFruit Velostat | [Adafruit](https://www.adafruit.com/product/1361)
+
+*Amazon Links are simply examples and other sources/parts may be used*
 
 # Firmware
+Follow the instruction from LucidGloves, except use the firmware files in this repository.
+
 Open the firmware files located in the firmware/lucidgloves-firmware folder.
 By default the firmware is configured for an arduino nano using serial.
 To configure the firmware, change the defines in the lucidgloves-firmware.ino file.
 
-**Configuration instructions are here: [Configuration Instructions](https://github.com/LucidVR/lucidgloves-hardware/wiki/Firmware-V2-Customization).** 
+**Configuration instructions are here: [Configuration Instructions](https://github.com/LucidVR/lucidgloves/wiki/Firmware-Setup-and-Customization-Tutorial/).**
 
 ## Tested boards:
 	* Arduino Nano
@@ -23,48 +37,16 @@ To configure the firmware, change the defines in the lucidgloves-firmware.ino fi
 ## Supported Communication Methods:
 	* USB Serial
 	* Bluetooth Serial (On ESP32 boards)
-	* BLE (Soon, not up yet)
-
-# Hardware
-STL files for 3D printing are located in the hardware folder. 
-*Prototype 4 models are currently experimental*
-
-The assembly **for each hand** is as follows:
-
-For Prototypes 3 and 3.1 - 
-* Spool (5x)
-* Tensioner (5x)
-* Cover (5x)
-* Holder (5x)
-* GuideRing(Will need to be resized) OR GuideNode(3.1) (2+ per finger, 1+ for thumb)
-* EndCap (1x per finger, will need to be resized to fit) 
-
-For Prototype 4 - 
-* HapticSpool (5x)
-* Tensioner_GreenPot (5x) OR Tensioner_WLPot (5x)
-* SpoolCover (5x)
-* RigidMount (2x) (One for each hand, make sure to flip for other hand)
-* WLPotSlideHolder OR WLPotElasticHolder OR GreenPotSlideHolder (5x)
-* Quest2_MountSlider OR Vive3.0_MountSlider (2x)
-* GuideRing (Proto 3) (Will need to be resized) OR GuideNode (Proto 3.1) (2+ per finger, 1+ for thumb)
-* EndCap (Proto 3) (1x per finger, will need to be resized to fit)
-
-
-Guide for printing parts: [Printing guide](https://github.com/LucidVR/lucidgloves-hardware/wiki/Parts-Printing-Guide)
-
-**Required parts for each hand: [Parts Lists](https://github.com/LucidVR/lucidgloves/wiki/Parts-Lists)**  
-Optional:  
-* Joysticks for locomotion 
-  - will be making a DIY treadmill eventually as well for those who would prefer that  
-* Buttons (Most can be replaced with gestures) (One is required for autocalibration)
-
-More information will be available on the [LucidVR site](http://lucidvrtech.com/) very soon.  
-*  [Prototype 3/3.1 Building Tutorial](https://youtu.be/Qj4hqRKiy8g)
-*  Prototype 4 Tutorial to come out in the future
 
 # SteamVR Compatibility (OpenGloves)
-This project uses the OpenGloves OpenVR driver for compatibility with SteamVR, which is downloadable on Steam:  
+This project uses the OpenGloves OpenVR driver for compatibility with SteamVR, which is downloadable on Steam:
 https://store.steampowered.com/app/1574050/OpenGloves/
 
-Source code available on GitHub:  
+# Credits
+## Upstream repository available on GitHub:
 https://github.com/LucidVR/opengloves-driver
+
+## Special thanks to:
+[LucasVRTech](https://github.com/lucas-vrtech) of the LucidGlove project
+[danwillim](https://github.com/danwillm) of OpenGlove project
+[TwidgeVR](https://github.com/TwidgeVR) guides on how to make homemade flex sensors
