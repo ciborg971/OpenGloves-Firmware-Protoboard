@@ -17,9 +17,9 @@ The hardware of this project differs from LucidGlove because it relies on flex s
 * 1/2in Velcro strap | [Amazon](https://www.amazon.com/Fasten-Management-Organizer-Reusable-Gripping/dp/B07GTV7PJK)
 * Iron-on fabric patch | [Amazon](https://www.amazon.com/Bondex-Iron-Patches-X7-Pkg-Black/dp/B005UT628U)
 * Copper Foil Tape | [Amazon](https://www.amazon.com/gp/product/B09C1ZLFZF)
-   * AdaFruit Velostat | [Adafruit](https://www.adafruit.com/product/1361)
+* AdaFruit Velostat | [Adafruit](https://www.adafruit.com/product/1361)
 
-*Amazon Links are simply examples and other sources/parts may be used*
+**Amazon Links are simply examples and other sources/parts may be used**
 
 # Firmware
 Follow the instruction from LucidGloves, except use the firmware files in this repository.
