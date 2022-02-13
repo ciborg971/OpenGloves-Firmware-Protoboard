@@ -6,18 +6,18 @@ This is a fork of the popular project [LucidGloves](https://github.com/LucidVR/l
 The hardware of this project differs from LucidGlove because it relies on flex sensors instead potentiometers for finger curl tracking.
 
 ## Glove parts
-	* 3D printed parts in the hardware folder
-	* 2mm wide nylon zipties | [Amazon](https://www.amazon.com/gp/product/B083ZXC71B)
-	* 0.4mm spring steel wire | [Amazon](https://www.amazon.com/gp/product/B096X52958)
-	* MG90 Servos | [Amazon](https://www.amazon.com/s?k=mg90+servo)
-	* Blue breadboard potentiometers | [Amazon](https://www.amazon.com/HUAREW-Adjustable-Resistance-Potentiometer-Assortment/dp/B0877BKG4R)
-	* ESP32 WROOM Board | [Amazon](https://www.amazon.com/s?k=esp32)
-	* 1000 grit sandpaper | [Amazon](https://www.amazon.com/s?k=1000+grit+sandpaper)
-	* Super Glue | [Amazon](https://www.amazon.com/s?k=super+glue)
-	* 1/2in Velcro strap | [Amazon](https://www.amazon.com/Fasten-Management-Organizer-Reusable-Gripping/dp/B07GTV7PJK)
-	* Iron-on fabric patch | [Amazon](https://www.amazon.com/Bondex-Iron-Patches-X7-Pkg-Black/dp/B005UT628U)
-	* Copper Foil Tape | [Amazon](https://www.amazon.com/gp/product/B09C1ZLFZF)
-    * AdaFruit Velostat | [Adafruit](https://www.adafruit.com/product/1361)
+* 3D printed parts in the hardware folder
+* 2mm wide nylon zipties | [Amazon](https://www.amazon.com/gp/product/B083ZXC71B)
+* 0.4mm spring steel wire | [Amazon](https://www.amazon.com/gp/product/B096X52958)
+* MG90 Servos | [Amazon](https://www.amazon.com/s?k=mg90+servo)
+* Blue breadboard potentiometers | [Amazon](https://www.amazon.com/HUAREW-Adjustable-Resistance-Potentiometer-Assortment/dp/B0877BKG4R)
+* ESP32 WROOM Board | [Amazon](https://www.amazon.com/s?k=esp32)
+* 1000 grit sandpaper | [Amazon](https://www.amazon.com/s?k=1000+grit+sandpaper)
+* Super Glue | [Amazon](https://www.amazon.com/s?k=super+glue)
+* 1/2in Velcro strap | [Amazon](https://www.amazon.com/Fasten-Management-Organizer-Reusable-Gripping/dp/B07GTV7PJK)
+* Iron-on fabric patch | [Amazon](https://www.amazon.com/Bondex-Iron-Patches-X7-Pkg-Black/dp/B005UT628U)
+* Copper Foil Tape | [Amazon](https://www.amazon.com/gp/product/B09C1ZLFZF)
+   * AdaFruit Velostat | [Adafruit](https://www.adafruit.com/product/1361)
 
 *Amazon Links are simply examples and other sources/parts may be used*
 
@@ -31,12 +31,12 @@ To configure the firmware, change the defines in the lucidgloves-firmware.ino fi
 **Configuration instructions are here: [Configuration Instructions](https://github.com/LucidVR/lucidgloves/wiki/Firmware-Setup-and-Customization-Tutorial/).**
 
 ## Tested boards:
-	* Arduino Nano
-	* ESP-WROOM-32
+* Arduino Nano
+* ESP-WROOM-32
 
 ## Supported Communication Methods:
-	* USB Serial
-	* Bluetooth Serial (On ESP32 boards)
+* USB Serial
+* Bluetooth Serial (On ESP32 boards)
 
 # SteamVR Compatibility (OpenGloves)
 This project uses the OpenGloves OpenVR driver for compatibility with SteamVR, which is downloadable on Steam:
