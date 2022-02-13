@@ -43,10 +43,10 @@ This project uses the OpenGloves OpenVR driver for compatibility with SteamVR, w
 https://store.steampowered.com/app/1574050/OpenGloves/
 
 # Credits
-## Upstream repository available on GitHub:
+### Upstream repository available on GitHub:
 https://github.com/LucidVR/opengloves-driver
 
-## Special thanks to:
-[LucasVRTech](https://github.com/lucas-vrtech) of the LucidGlove project
-[danwillim](https://github.com/danwillm) of OpenGlove project
-[TwidgeVR](https://github.com/TwidgeVR) guides on how to make homemade flex sensors
+### Special Thanks:
+* [LucasVRTech](https://github.com/lucas-vrtech) of the LucidGlove project
+* [danwillim](https://github.com/danwillm) of OpenGlove project
+* [TwidgeVR](https://github.com/TwidgeVR) guides on how to make homemade flex sensors
