@@ -1,4 +1,6 @@
 # FlexiaGloves
+![3d_model](https://user-images.githubusercontent.com/2058899/154548240-75b58b25-c28c-4187-bc41-99eefaa2e872.png)
+![assembled_finger](https://user-images.githubusercontent.com/2058899/154548257-2d27b0bf-02bb-4453-a536-e678e75ac065.jpg)
 
 This is a fork of the popular project [LucidGloves](https://github.com/LucidVR/lucidgloves). This project aims to build a compact and OpenGlove compatible, flex sensor based VR glove. The hardware is a complete departure from the orignal LucidGlove, but the firmware is largely the same and is fully compatible with the device API that the OpenGlove Driver provides.
 
