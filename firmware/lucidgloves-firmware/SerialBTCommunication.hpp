@@ -1,11 +1,13 @@
-//only compiles if BTSerial is set because it won't compile for a non-compatible board
-#if COMMUNICATION == COMM_BTSERIAL
+#pragma once
+
+#include "ICommunication.hpp"
 #include "BluetoothSerial.h"
+
 class BTSerialCommunication : public ICommunication {
   private:
     bool m_isOpen;
     BluetoothSerial m_SerialBT;
-    
+
   public:
     BTSerialCommunication() {
       m_isOpen = false;
@@ -26,6 +28,10 @@ class BTSerialCommunication : public ICommunication {
       m_SerialBT.print(data);
     }
 
+    bool hasData() override {
+      return m_SerialBT.available() > 0;
+    }
+
     bool readData(char* input){
       /*byte size = m_SerialBT.readBytesUntil('\n', input, 100);
       input[size] = NULL;*/
@@ -34,4 +40,3 @@ class BTSerialCommunication : public ICommunication {
       return input != NULL && strlen(input) > 0;
     }
 };
-#endif

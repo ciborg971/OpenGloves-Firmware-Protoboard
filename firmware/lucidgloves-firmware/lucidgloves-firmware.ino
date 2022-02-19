@@ -1,102 +1,199 @@
-/*
- * LucidGloves Firmware Version 4
- * Author: Lucas_VRTech - LucidVR
- * lucidvrtech.com
- */
+#include "Config.h"
 
-#include "AdvancedConfig.h"
+#include "Button.hpp"
+#include "Finger.hpp"
+#include "Gesture.hpp"
+#include "JoyStick.hpp"
 
-//This is the configuration file, main structure in _main.ino
-//CONFIGURATION SETTINGS:
-#define COMMUNICATION COMM_SERIAL //Which communication protocol to use
-//serial over USB
-  #define SERIAL_BAUD_RATE 115200
-  
-//serial over Bluetooth
-  #define BTSERIAL_DEVICE_NAME "lucidgloves-left"
-
-//ANALOG INPUT CONFIG
-#define FLIP_POTS  false  //Flip values from potentiometers (for fingers!) if they are backwards
-
-//Gesture enables, make false to use button override
-#define TRIGGER_GESTURE true
-#define GRAB_GESTURE    true
-#define PINCH_GESTURE   true
-
-
-//BUTTON INVERT
-//If a button registers as pressed when not and vice versa (eg. using normally-closed switches),
-//you can invert their behaviour here by setting their line to true.
-//If unsure, set to false
-#define INVERT_A false
-#define INVERT_B false
-#define INVERT_JOY false
-#define INVERT_MENU false
-#define INVERT_CALIB false
-//These only apply with gesture button override:
-#define INVERT_TRIGGER false
-#define INVERT_GRAB false
-#define INVERT_PINCH false
-
-
-//joystick configuration
-#define JOYSTICK_BLANK false //make true if not using the joystick
-#define JOY_FLIP_X false
-#define JOY_FLIP_Y false
-#define JOYSTICK_DEADZONE 10 //deadzone in the joystick to prevent drift (in percent)
-
-#define NO_THUMB false //If for some reason you don't want to track the thumb
-
-#define USING_CALIB_PIN false //When PIN_CALIB is shorted (or it's button pushed) it will reset calibration if this is on.
-
-#define USING_FORCE_FEEDBACK false //Force feedback haptics allow you to feel the solid objects you hold
-#define SERVO_SCALING false //dynamic scaling of servo motors
-
-//PINS CONFIGURATION 
-#if defined(__AVR__)
-  //(This configuration is for Arduino Nano so make sure to change if you're on another board)
-  #define PIN_PINKY     A0
-  #define PIN_RING      A1
-  #define PIN_MIDDLE    A2
-  #define PIN_INDEX     A3
-  #define PIN_THUMB     A4
-  #define PIN_JOY_X     A6
-  #define PIN_JOY_Y     A7
-  #define PIN_JOY_BTN   7 
-  #define PIN_A_BTN     8 
-  #define PIN_B_BTN     9
-  #define PIN_TRIG_BTN  10 //unused if gesture set
-  #define PIN_GRAB_BTN  11 //unused if gesture set
-  #define PIN_PNCH_BTN  12 //unused if gesture set
-  #define PIN_CALIB     13 //button for recalibration
-  #define DEBUG_LED     LED_BUILTIN
-  #define PIN_PINKY_MOTOR     2 //used for force feedback
-  #define PIN_RING_MOTOR      3 //^
-  #define PIN_MIDDLE_MOTOR    4 //^
-  #define PIN_INDEX_MOTOR     5 //^
-  #define PIN_THUMB_MOTOR     6 //^
-  #define PIN_MENU_BTN        8
-#elif defined(ESP32)
-  //(This configuration is for ESP32 DOIT V1 so make sure to change if you're on another board)
-  #define PIN_PINKY     36
-  #define PIN_RING      39
-  #define PIN_MIDDLE    34
-  #define PIN_INDEX     35
-  #define PIN_THUMB     32
-  #define PIN_JOY_X     33
-  #define PIN_JOY_Y     25
-  #define PIN_JOY_BTN   26
-  #define PIN_A_BTN     27 
-  #define PIN_B_BTN     14
-  #define PIN_TRIG_BTN  12 //unused if gesture set
-  #define PIN_GRAB_BTN  13 //unused if gesture set
-  #define PIN_PNCH_BTN  23 //unused if gesture set
-  #define PIN_CALIB     12 //button for recalibration
-  #define DEBUG_LED 2
-  #define PIN_PINKY_MOTOR     5  //used for force feedback
-  #define PIN_RING_MOTOR      18 //^
-  #define PIN_MIDDLE_MOTOR    19 //^
-  #define PIN_INDEX_MOTOR     21 //^
-  #define PIN_THUMB_MOTOR     17 //^
-  #define PIN_MENU_BTN        27
+#include "ICommunication.hpp"
+#if COMMUNICATION == COMM_SERIAL
+  #include "SerialCommunication.hpp"
+#elif COMMUNICATION == COMM_BTSERIAL
+  #include "SerialBTCommunication.hpp"
 #endif
+
+#define ALWAYS_CALIBRATING CALIBRATION_LOOPS == -1
+
+ICommunication* comm;
+int calibration_count = 0;
+
+#if USING_CALIB_PIN
+  // This button is referenced directly by the FW, so we need a pointer to it outside
+  // the list of buttons.
+  Button calibration_button(EncodingType::CALIB, PIN_CALIB, INVERT_CALIB);
+#endif
+
+Button* buttons[BUTTON_COUNT] = {
+  new Button(EncodingType::A_BTN, PIN_A_BTN, INVERT_A),
+  new Button(EncodingType::B_BTN, PIN_B_BTN, INVERT_B),
+  new Button(EncodingType::MENU, PIN_MENU_BTN, INVERT_MENU),
+  #if ENABLE_JOYSTICK
+    new Button(EncodingType::JOY_BTN, PIN_JOY_BTN, INVERT_JOY),
+  #endif
+  #if !TRIGGER_GESTURE
+    new Button(EncodingType::TRIGGER, PIN_TRIG_BTN, INVERT_TRIGGER),
+  #endif
+  #if !GRAB_GESTURE
+    new Button(EncodingType::GRAB, PIN_GRAB_BTN, INVERT_GRAB),
+  #endif
+  #if !PINCH_GESTURE
+    new Button(EncodingType::PINCH, PIN_PNCH_BTN, INVERT_PINCH),
+  #endif
+  #if USING_CALIB_PIN
+    &calibration_button,
+  #endif
+};
+
+#if ENABLE_THUMB
+Finger thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+#endif
+Finger index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
+Finger middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
+Finger ring(EncodingType::RING, PIN_RING, PIN_RING_MOTOR);
+Finger pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
+
+Finger* fingers[FINGER_COUNT] = {
+  #if ENABLE_THUMB
+    &thumb,
+  #endif
+  &index, &middle, &ring, &pinky
+};
+
+JoyStickAxis* joysticks[JOYSTICK_COUNT] = {
+  #if ENABLE_JOYSTICK
+    new JoyStickAxis(EncodingType::JOY_X, PIN_JOY_X, JOYSTICK_DEADZONE, INVERT_JOY_X),
+    new JoyStickAxis(EncodingType::JOY_Y, PIN_JOY_Y, JOYSTICK_DEADZONE, INVERT_JOY_Y)
+  #endif
+};
+
+Gesture* gestures[GESTURE_COUNT] = {
+  #if TRIGGER_GESTURE
+    new TriggerGesture(&index),
+  #endif
+  #if GRAB_GESTURE
+    new GrabGesture(&index, &middle, &ring, &pinky),
+  #endif
+  #if PINCH_GESTURE
+    new PinchGesture(&thumb, &index)
+  #endif
+};
+
+// These are composite lists of the above list for a cleaner loop.
+Calibrated* calibrators[CALIBRATED_COUNT];
+Encoder* encoders[INPUT_COUNT];
+Input* inputs[INPUT_COUNT];
+
+char* encoded_output_string;
+
+void setup() {
+  #if COMMUNICATION == COMM_SERIAL
+    comm = new SerialCommunication();
+  #elif COMMUNICATION == COMM_BTSERIAL
+    comm = new BTSerialCommunication();
+  #endif
+
+  comm->start();
+
+  // Register the inputs and encoders.
+  size_t next_input = 0;
+  for (size_t i = 0; i < BUTTON_COUNT; next_input++, i++) {
+    encoders[next_input] = buttons[i];
+    inputs[next_input] = buttons[i];
+  }
+
+  for (size_t i = 0; i < FINGER_COUNT; next_input++, i++) {
+    encoders[next_input] = fingers[i];
+    inputs[next_input] = fingers[i];
+  }
+
+  for (size_t i = 0; i < JOYSTICK_COUNT; next_input++, i++) {
+    encoders[next_input] = joysticks[i];
+    inputs[next_input] = joysticks[i];
+  }
+
+  for (size_t i = 0; i < GESTURE_COUNT; next_input++, i++) {
+    // Gestures should be at the end of the list since their inputs
+    // are based on other inputs.
+    encoders[next_input] = gestures[i];
+    inputs[next_input] = gestures[i];
+  }
+
+  // Register the calibrated inputs
+  size_t next_calibrator = 0;
+  for (size_t i = 0; i < FINGER_COUNT; next_calibrator++, i++) {
+    calibrators[next_calibrator] = fingers[i];
+  }
+
+  // Setup all the inputs.
+  for (size_t i = 0; i < INPUT_COUNT; i++) {
+    inputs[i]->setup();
+  }
+
+  // Figure out needed size for the output string.
+  int string_size = 0;
+  for(size_t i = 0; i < INPUT_COUNT; i++) {
+    string_size += encoders[i]->getEncodedSize();
+  }
+
+  // Add 1 for the null terminator.
+  encoded_output_string = new char[string_size + 1];
+}
+
+void loop() {
+  // The communication path is not open, noting to do.
+  // TODO: If there is an LED output added, we should light it red
+  //       or blink it to indicate the error.
+  if (!comm->isOpen()) return;
+
+  char received_bytes[100];
+  int haptic_limits[5];
+  if (comm->hasData() && comm->readData(received_bytes)) {
+    #if USING_FORCE_FEEDBACKe
+    decodeData(received_bytes, haptic_limits);
+    // We always get 5 fingers of haptic data, but we may not have 5 fingers.
+    // Offset into the haptic data to discard the fingers we arenn't using.
+      int finger_offset = !ENABLE_THUMB;
+      for (int i = 0; i < FINGER_COUNT; i++) {
+        fingers[i]->setForceFeedback(haptic_limits[i + finger_offset]);
+      }
+    #endif
+  }
+
+  // Update all the inputs
+  for (int i = 0; i < INPUT_COUNT; i++) {
+    inputs[i]->readInput();
+  }
+
+  // Setup calibration to be activated in the next loop iteration.
+  #if USING_CALIB_PIN
+    bool calibrate_pressed = calibration_button.isPressed();
+  #else
+    bool calibrate_pressed = false;
+  #endif
+
+  // Notify the calibrators to turn on.
+  if (calibrate_pressed) {
+    calibration_count = 0;
+    for (size_t i = 0; i < CALIBRATED_COUNT; i++) {
+      calibrators[i]->enableCalibration();
+    }
+  }
+
+  if (calibration_count < CALIBRATION_LOOPS || ALWAYS_CALIBRATING){
+    // Keep calibrating for one at least one more loop.
+    calibration_count++;
+  } else {
+    // Calibration is done, notify the calibrators
+    for (size_t i = 0; i < CALIBRATED_COUNT; i++) {
+      calibrators[i]->disableCalibration();
+    }
+  }
+
+  // Encode all of the outputs to a single string.
+  encode(encoded_output_string, encoders, INPUT_COUNT);
+
+  // Send the string to the communication handler.
+  comm->output(encoded_output_string);
+
+  delay(LOOP_TIME);
+}

@@ -1,3 +1,7 @@
+#pragma once
+
+#include "ICommunication.hpp"
+
 class SerialCommunication : public ICommunication {
   private:
     bool m_isOpen;
@@ -20,6 +24,10 @@ class SerialCommunication : public ICommunication {
     void output(char* data){
       Serial.print(data);
       Serial.flush();
+    }
+
+    bool hasData() {
+      return Serial.available() > 0;
     }
 
     bool readData(char* input){
