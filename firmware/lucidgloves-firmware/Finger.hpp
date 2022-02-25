@@ -107,3 +107,31 @@ class Finger : public Encoder, public Input, public Calibrated {
     Servo servo;
   #endif
 };
+
+class SplayFinger : public Finger {
+ public:
+  SplayFinger(EncodingType type, int pin, int splay_pin, int servo_pin) :
+    Finger(type, pin, servo_pin), splay_pin(splay_pin), splay_value(0) {}
+
+  void readInput() override {
+    Finger::readInput();
+    splay_value = analogRead(splay_pin);
+  }
+
+  inline int getEncodedSize() const override {
+    // Encoded string size = AXXXX(AB)XXXX
+    return 13;
+  }
+
+  int encode(char* output) const override {
+    return snprintf(output, getEncodedSize(), "%c%d(%cB)%d", type, value, type, splay_value);
+  }
+
+  int splayValue() const {
+    return splay_value;
+  }
+
+ protected:
+  int splay_pin;
+  int splay_value;
+};

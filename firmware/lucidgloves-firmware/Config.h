@@ -44,6 +44,7 @@
 
 // Finger settings
 #define ENABLE_THUMB true // If for some reason you don't want to track the thumb
+#define ENABLE_SPLAY true
 
 //Gesture enables, make false to use button override
 #define TRIGGER_GESTURE true
@@ -85,6 +86,11 @@
   #define PIN_INDEX_MOTOR     5 //^
   #define PIN_THUMB_MOTOR     6 //^
   #define PIN_MENU_BTN        8
+  #define PIN_PINKY_SPLAY     1
+  #define PIN_RING_SPLAY      1
+  #define PIN_MIDDLE_SPLAY    1
+  #define PIN_INDEX_SPLAY     1
+  #define PIN_THUMB_SPLAY     1
 #elif defined(ESP32)
   //(This configuration is for ESP32 DOIT V1 so make sure to change if you're on another board)
   #define PIN_PINKY     36
@@ -108,6 +114,11 @@
   #define PIN_INDEX_MOTOR     21 //^
   #define PIN_THUMB_MOTOR     17 //^
   #define PIN_MENU_BTN        27
+  #define PIN_PINKY_SPLAY     1
+  #define PIN_RING_SPLAY      1
+  #define PIN_MIDDLE_SPLAY    1
+  #define PIN_INDEX_SPLAY     1
+  #define PIN_THUMB_SPLAY     1
 #endif
 
 // Advanced Config. Don't touch this unless you know what you are doing. Only for the pros XD

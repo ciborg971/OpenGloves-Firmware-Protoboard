@@ -44,13 +44,23 @@ Button* buttons[BUTTON_COUNT] = {
   #endif
 };
 
-#if ENABLE_THUMB
-Finger thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+#if !ENABLE_SPLAY
+  #if ENABLE_THUMB
+  Finger thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  #endif
+  Finger index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
+  Finger middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
+  Finger ring(EncodingType::RING, PIN_RING, PIN_RING_MOTOR);
+  Finger pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
+#else
+  #if ENABLE_THUMB
+  SplayFinger thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  #endif
+  SplayFinger index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
+  SplayFinger middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
+  SplayFinger ring(EncodingType::RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
+  SplayFinger pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
 #endif
-Finger index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
-Finger middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
-Finger ring(EncodingType::RING, PIN_RING, PIN_RING_MOTOR);
-Finger pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
 
 Finger* fingers[FINGER_COUNT] = {
   #if ENABLE_THUMB
