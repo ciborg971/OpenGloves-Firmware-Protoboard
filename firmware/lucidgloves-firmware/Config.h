@@ -79,7 +79,7 @@
   #define PIN_GRAB_BTN  11 //unused if gesture set
   #define PIN_PNCH_BTN  12 //unused if gesture set
   #define PIN_CALIB     13 //button for recalibration
-  #define DEBUG_LED     LED_BUILTIN
+  #define PIN_LED       LED_BUILTIN
   #define PIN_PINKY_MOTOR     2 //used for force feedback
   #define PIN_RING_MOTOR      3 //^
   #define PIN_MIDDLE_MOTOR    4 //^
@@ -107,7 +107,7 @@
   #define PIN_GRAB_BTN  13 //unused if gesture set
   #define PIN_PNCH_BTN  23 //unused if gesture set
   #define PIN_CALIB     12 //button for recalibration
-  #define DEBUG_LED 2
+  #define PIN_LED       2
   #define PIN_PINKY_MOTOR     5  //used for force feedback
   #define PIN_RING_MOTOR      18 //^
   #define PIN_MIDDLE_MOTOR    19 //^

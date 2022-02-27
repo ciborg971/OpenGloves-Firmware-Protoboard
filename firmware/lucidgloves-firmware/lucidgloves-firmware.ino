@@ -4,6 +4,7 @@
 #include "Finger.hpp"
 #include "Gesture.hpp"
 #include "JoyStick.hpp"
+#include "LED.hpp"
 
 #include "ICommunication.hpp"
 #if COMMUNICATION == COMM_SERIAL
@@ -16,6 +17,8 @@
 
 ICommunication* comm;
 int calibration_count = 0;
+
+LED led(PIN_LED);
 
 #if USING_CALIB_PIN
   // This button is referenced directly by the FW, so we need a pointer to it outside
@@ -147,13 +150,19 @@ void setup() {
 
   // Add 1 for the null terminator.
   encoded_output_string = new char[string_size + 1];
+
+  // Setup the LED.
+  led.setup();
 }
 
 void loop() {
-  // The communication path is not open, noting to do.
-  // TODO: If there is an LED output added, we should light it red
-  //       or blink it to indicate the error.
-  if (!comm->isOpen()) return;
+  if (!comm->isOpen()){
+    // Connection to FW not ready, blink the LED to indicate no connection.
+    led.setState(LED::State::BLINK_STEADY);
+  } else {
+    // All is good, LED on to indicate a good connection.
+    led.setState(LED::State::ON);
+  }
 
   char received_bytes[100];
   int haptic_limits[5];
