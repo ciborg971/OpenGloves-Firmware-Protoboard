@@ -3,15 +3,12 @@
 #include "Config.h"
 
 #include "Finger.hpp"
-#include "Encoding.hpp"
+#include "DriverProtocol.hpp"
 #include "Input.hpp"
 
 class Gesture : public Input, public Encoder {
  public:
-  Gesture(EncodingType type) : type(type), value(false) {}
-
-  // Nothing to do here.
-  void setup() override {}
+  Gesture(Encoder::Type type) : type(type), value(false) {}
 
   inline int getEncodedSize() const override {
     // Encode string size = single char + '\0'
@@ -27,7 +24,7 @@ class Gesture : public Input, public Encoder {
   }
 
  private:
-  EncodingType type;
+  Encoder::Type type;
 
  protected:
   bool value;
@@ -37,7 +34,7 @@ class GrabGesture : public Gesture {
  public:
   GrabGesture(const Finger* index, const Finger* middle,
               const Finger* ring, const Finger* pinky) :
-    Gesture(EncodingType::GRAB),
+    Gesture(Encoder::Type::GRAB),
     index(index), middle(middle), ring(ring), pinky(pinky)  {}
 
   // Grab gesture is pressed if the average all fingers is more than
@@ -57,7 +54,7 @@ class GrabGesture : public Gesture {
 class TriggerGesture : public Gesture {
  public:
   TriggerGesture(const Finger* index_finger) :
-    Gesture(EncodingType::TRIGGER), index_finger(index_finger) {}
+    Gesture(Encoder::Type::TRIGGER), index_finger(index_finger) {}
 
   // Trigger gesture is pressed if the index finger is more than halfway flexed
   void readInput() override {
@@ -71,7 +68,7 @@ class TriggerGesture : public Gesture {
 class PinchGesture : public Gesture {
  public:
   PinchGesture(const Finger* thumb, const Finger* index_finger) :
-    Gesture(EncodingType::PINCH), thumb(thumb), index_finger(index_finger) {}
+    Gesture(Encoder::Type::PINCH), thumb(thumb), index_finger(index_finger) {}
 
   // Pinch gesture is pressed if the average flex of the thumb and index is more than
   // halfway flexed.

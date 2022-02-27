@@ -15,12 +15,12 @@ class LED : public Output {
 
   LED(int pin) : pin(pin), state(LOW), last_update(0){}
 
-  void setup() override {
+  void setupOutput() override {
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state = LOW);
   };
 
-  void setState(int new_state) {
+  void writeOutput(int new_state) {
     switch (static_cast<State>(new_state)) {
       case OFF:
         digitalWrite(pin, state = LOW);

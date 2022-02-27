@@ -46,10 +46,14 @@
 #define ENABLE_THUMB true // If for some reason you don't want to track the thumb
 #define ENABLE_SPLAY false
 
-//Gesture enables, make false to use button override
+// Gesture enables, make false to use button override
 #define TRIGGER_GESTURE true
 #define GRAB_GESTURE    true
 #define PINCH_GESTURE   (true && ENABLE_THUMB) // Cannot be enabled if there is no thumb
+
+// Force Feedback setting
+#define USING_FORCE_FEEDBACK false //Force feedback haptics allow you to feel the solid objects you hold
+#define SERVO_SCALING false //dynamic scaling of servo motors
 
 // Counts of objects in the system used for looping
 #define GESTURE_COUNT (TRIGGER_GESTURE + GRAB_GESTURE + PINCH_GESTURE)
@@ -58,9 +62,7 @@
 #define BUTTON_COUNT (3 + ENABLE_JOYSTICK + !TRIGGER_GESTURE + !GRAB_GESTURE + !PINCH_GESTURE + USING_CALIB_PIN)
 #define INPUT_COUNT (BUTTON_COUNT+FINGER_COUNT+GESTURE_COUNT+JOYSTICK_COUNT)
 #define CALIBRATED_COUNT FINGER_COUNT
-
-#define USING_FORCE_FEEDBACK false //Force feedback haptics allow you to feel the solid objects you hold
-#define SERVO_SCALING false //dynamic scaling of servo motors
+#define OUTPUT_COUNT (USING_FORCE_FEEDBACK ? FINGER_COUNT : 0)
 
 //PINS CONFIGURATION
 #if defined(__AVR__)

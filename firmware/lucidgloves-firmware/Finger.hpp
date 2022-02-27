@@ -3,34 +3,20 @@
 #include "Config.h"
 
 #include "Calibration.hpp"
-#include "Encoding.hpp"
+#include "DriverProtocol.hpp"
+#include "ForceFeedback.hpp"
 #include "Input.hpp"
-
-#if USING_FORCE_FEEDBACK
-  #if defined(ESP32)
-    #include <ESP32Servo.h>
-  #else
-    #include <Servo.h>
-  #endif
-#endif
 
 #if ENABLE_MEDIAN_FILTER
   #include <RunningMedian.h>
 #endif
 
-class Finger : public Encoder, public Input, public Calibrated {
+class Finger : public Encoder, public Input, public Calibrated, public ServoForceFeedback {
  public:
-  Finger(EncodingType type, int pin, int servo_pin) :
-    type(type), pin(pin), servo_pin(servo_pin), value(0),
+  Finger(Encoder::Type enc_type, Decoder::Type dec_type, int pin, int servo_pin) :
+    ServoForceFeedback(dec_type, servo_pin),
+    type(enc_type), pin(pin), value(0),
     median(MEDIAN_SAMPLES), calibrator(0, ANALOG_MAX, CLAMP_ANALOG_MAP) {}
-
-  void setup() override {
-    #if USING_FORCE_FEEDBACK
-      // Initialize the servo and move it to the unrestricted base limit.
-      servo.attach(servo_pin);
-      setForceFeedback(0);
-    #endif
-  }
 
   void readInput() override {
     // Read the latest value.
@@ -73,25 +59,13 @@ class Finger : public Encoder, public Input, public Calibrated {
     calibrator.reset();
   }
 
-  int flexionValue() const {
+  virtual int flexionValue() const {
     return value;
   }
 
-#if USING_FORCE_FEEDBACK
-  virtual void setForceFeedback(int limit) {
-    force_feedback_limt = limit;
-    servo.write(scale(limit));
-  }
-#endif
-
  protected:
-  int scale(int input) {
-    return 180.0f - input / 1000.0f * 180.0f;
-  }
-
-  EncodingType type;
+  Encoder::Type type;
   int pin;
-  int servo_pin;
   int value;
 
   #if ENABLE_MEDIAN_FILTER
@@ -101,17 +75,12 @@ class Finger : public Encoder, public Input, public Calibrated {
   #endif
 
   MinMaxCalibrator<int> calibrator;
-
-  #if USING_FORCE_FEEDBACK
-    int force_feedback_limt;
-    Servo servo;
-  #endif
 };
 
 class SplayFinger : public Finger {
  public:
-  SplayFinger(EncodingType type, int pin, int splay_pin, int servo_pin) :
-    Finger(type, pin, servo_pin), splay_pin(splay_pin), splay_value(0) {}
+  SplayFinger(Encoder::Type enc_type, Decoder::Type dec_type, int pin, int splay_pin, int servo_pin) :
+    Finger(enc_type, dec_type, pin, servo_pin), splay_pin(splay_pin), splay_value(0) {}
 
   void readInput() override {
     Finger::readInput();
@@ -127,7 +96,7 @@ class SplayFinger : public Finger {
     return snprintf(output, getEncodedSize(), "%c%d(%cB)%d", type, value, type, splay_value);
   }
 
-  int splayValue() const {
+  virtual int splayValue() const {
     return splay_value;
   }
 

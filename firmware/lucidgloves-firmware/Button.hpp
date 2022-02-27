@@ -2,15 +2,15 @@
 
 #include "Config.h"
 
-#include "Encoding.hpp"
+#include "DriverProtocol.hpp"
 #include "Input.hpp"
 
 class Button : public Encoder, public Input {
  public:
-  Button(EncodingType type, int pin, bool invert) :
+  Button(Encoder::Type type, int pin, bool invert) :
     type(type), pin(pin), on_state(invert ? HIGH : LOW), value(false) {}
 
-  void setup() override {
+  void setupInput() override {
     pinMode(PIN_JOY_BTN, INPUT_PULLUP);
   }
 
@@ -32,7 +32,7 @@ class Button : public Encoder, public Input {
   }
 
  private:
-  const EncodingType type;
+  const Encoder::Type type;
   const int pin;
   const bool on_state;
   bool value;
