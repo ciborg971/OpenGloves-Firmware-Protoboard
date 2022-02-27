@@ -15,16 +15,17 @@ class Button : public Encoder, public Input {
   }
 
   virtual void readInput() {
-    bool new_value = digitalRead(pin) == on_state;
+    value = digitalRead(pin) == on_state;
   }
 
   inline int getEncodedSize() const override {
     // Encode string size = single char + '\0'
-    return 1;
+    return 2;
   }
 
   int encode(char* output) const override {
-    return snprintf(output, getEncodedSize(), "%c", value ? type : '\0');
+    output[0] = value ? type : '\0';
+    return value ? getEncodedSize() : 1;
   }
 
   bool isPressed() const {

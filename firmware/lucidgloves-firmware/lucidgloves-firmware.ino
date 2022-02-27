@@ -23,7 +23,6 @@ int calibration_count = 0;
 
 LED led(PIN_LED);
 
-
 #if USING_CALIB_PIN
   // This button is referenced directly by the FW, so we need a pointer to it outside
   // the list of buttons.

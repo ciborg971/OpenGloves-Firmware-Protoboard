@@ -41,11 +41,14 @@ int encodeAll(char* output, Encoder* encoders[], size_t count) {
   for (size_t i = 0; i < count; i++) {
     // The offset is the total charecters already added to the string.
     offset += encoders[i]->encode(output+offset);
+    // Move the offset back by one so we overwrite the null terminator of the
+    // last encoded value.
+    offset--;
   }
 
   // Add a new line to the end of the encoded string.
-  output[offset] = '\n';
+  output[offset++] = '\n';
   output[offset] = '\0';
 
-  return offset + 1;
+  return offset;
 }

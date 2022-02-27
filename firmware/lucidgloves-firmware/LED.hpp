@@ -29,7 +29,7 @@ class LED : public Output {
         digitalWrite(pin, state = HIGH);
         break;
       case BLINK_STEADY:
-        if (millis() > last_update + 1000) {
+        if (millis() > last_update + 500) {
           // Every 1 second or so invert the state of the LED.
           digitalWrite(pin, state = !state);
           last_update = millis();

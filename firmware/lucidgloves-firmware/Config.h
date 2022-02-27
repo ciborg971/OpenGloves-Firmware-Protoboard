@@ -125,7 +125,7 @@
 
 // Advanced Config. Don't touch this unless you know what you are doing. Only for the pros XD
 #define LOOP_TIME 4 //How much time between data sends (ms), set to 0 for a good time :)
-#define CALIBRATION_LOOPS -1//How many loops should be calibrated. Set to -1 to always be calibrated.
+#define CALIBRATION_LOOPS -1 //How many loops should be calibrated. Set to -1 to always be calibrated.
 
 //Automatically set ANALOG_MAX depending on the microcontroller
 #if defined(__AVR__)
