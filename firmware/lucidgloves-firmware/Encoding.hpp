@@ -47,7 +47,11 @@ int encode(char* output, Encoder* encoders[], size_t count) {
     offset += encoders[i]->encode(output+offset);
   }
 
-  return offset;
+  // Add a new line to the end of the encoded string.
+  output[offset] = '\n';
+  output[offset] = '\0';
+
+  return offset + 1;
 }
 
 int getArgument(char* stringToDecode, char command){

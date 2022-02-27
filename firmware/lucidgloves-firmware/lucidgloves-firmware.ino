@@ -49,27 +49,27 @@ Button* buttons[BUTTON_COUNT] = {
 
 #if !ENABLE_SPLAY
   #if ENABLE_THUMB
-  Finger thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  Finger finger_thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
   #endif
-  Finger index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
-  Finger middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
-  Finger ring(EncodingType::RING, PIN_RING, PIN_RING_MOTOR);
-  Finger pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
+  Finger finger_index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
+  Finger finger_middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
+  Finger finger_ring(EncodingType::RING, PIN_RING, PIN_RING_MOTOR);
+  Finger finger_pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
 #else
   #if ENABLE_THUMB
-  SplayFinger thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  SplayFinger finger_thumb(EncodingType::THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
   #endif
-  SplayFinger index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
-  SplayFinger middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
-  SplayFinger ring(EncodingType::RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
-  SplayFinger pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
+  SplayFinger finger_index(EncodingType::INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
+  SplayFinger finger_middle(EncodingType::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
+  SplayFinger finger_ring(EncodingType::RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
+  SplayFinger finger_pinky(EncodingType::PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
 #endif
 
 Finger* fingers[FINGER_COUNT] = {
   #if ENABLE_THUMB
-    &thumb,
+    &finger_thumb,
   #endif
-  &index, &middle, &ring, &pinky
+  &finger_index, &finger_middle, &finger_ring, &finger_pinky
 };
 
 JoyStickAxis* joysticks[JOYSTICK_COUNT] = {
@@ -81,13 +81,13 @@ JoyStickAxis* joysticks[JOYSTICK_COUNT] = {
 
 Gesture* gestures[GESTURE_COUNT] = {
   #if TRIGGER_GESTURE
-    new TriggerGesture(&index),
+    new TriggerGesture(&finger_index),
   #endif
   #if GRAB_GESTURE
-    new GrabGesture(&index, &middle, &ring, &pinky),
+    new GrabGesture(&finger_index, &finger_middle, &finger_ring, &finger_pinky),
   #endif
   #if PINCH_GESTURE
-    new PinchGesture(&thumb, &index)
+    new PinchGesture(&finger_thumb, &finger_index)
   #endif
 };
 
@@ -148,8 +148,8 @@ void setup() {
     string_size += encoders[i]->getEncodedSize();
   }
 
-  // Add 1 for the null terminator.
-  encoded_output_string = new char[string_size + 1];
+  // Add 1 new line and 1 for the null terminator.
+  encoded_output_string = new char[string_size + 1 + 1];
 
   // Setup the LED.
   led.setup();

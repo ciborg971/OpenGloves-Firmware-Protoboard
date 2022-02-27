@@ -44,7 +44,7 @@
 
 // Finger settings
 #define ENABLE_THUMB true // If for some reason you don't want to track the thumb
-#define ENABLE_SPLAY true
+#define ENABLE_SPLAY false
 
 //Gesture enables, make false to use button override
 #define TRIGGER_GESTURE true
@@ -154,4 +154,3 @@
 // https://www.arduino.cc/reference/en/libraries/runningmedian/
 #define ENABLE_MEDIAN_FILTER false //use the median of the previous values, helps reduce noise
 #define MEDIAN_SAMPLES 20
-
