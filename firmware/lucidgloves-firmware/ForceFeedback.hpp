@@ -1,7 +1,6 @@
 #pragma
 
 #include "DriverProtocol.hpp"
-#include "Output.hpp"
 
 #if defined(ESP32)
   #include <ESP32Servo.h>
@@ -9,37 +8,33 @@
   #include <Servo.h>
 #endif
 
-class ForceFeedback : public Output, public Decoder {
+class ForceFeedback : public DecodedOuput {
  public:
-  ForceFeedback(Decoder::Type type) : type(type), limit(0) {}
+  ForceFeedback(DecodedOuput::Type type) : type(type), limit(0) {}
 
-  int decode(const char* input) const override {
+  void decodeToOuput(const char* input) override {
     char* start = strchr(input, type);
-    return start == NULL ? -1 : atoi(start + 1);
-  }
-
-  void writeOutput(int state) override {
-    limit = state;
+    limit = start == NULL ? -1 : atoi(start + 1);
   }
 
  protected:
-  Decoder::Type type;
+  DecodedOuput::Type type;
   int limit;
 };
 
 
 class ServoForceFeedback : public ForceFeedback {
  public:
-  ServoForceFeedback(Decoder::Type type, int servo_pin) : ForceFeedback(type), servo_pin(servo_pin) {}
+  ServoForceFeedback(DecodedOuput::Type type, int servo_pin) : ForceFeedback(type), servo_pin(servo_pin) {}
 
   void setupOutput() override {
     // Initialize the servo and move it to the unrestricted base limit.
     servo.attach(servo_pin);
-    writeOutput(0);
+    servo.write(0);
   };
 
-  void writeOutput(int state) override {
-    ForceFeedback::writeOutput(state);
+  void decodeToOuput(const char* input) override {
+    ForceFeedback::decodeToOuput(input);
     servo.write(scale(limit));
   }
 

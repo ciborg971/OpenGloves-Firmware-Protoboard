@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Output.hpp"
-
-class LED : public Output {
+class LED {
  public:
   enum State : int {
     OFF,
@@ -15,12 +13,12 @@ class LED : public Output {
 
   LED(int pin) : pin(pin), state(LOW), last_update(0){}
 
-  void setupOutput() override {
+  void setup() {
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state = LOW);
   };
 
-  void writeOutput(int new_state) {
+  void setState(int new_state) {
     switch (static_cast<State>(new_state)) {
       case OFF:
         digitalWrite(pin, state = LOW);

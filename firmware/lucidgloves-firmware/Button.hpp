@@ -3,11 +3,10 @@
 #include "Config.h"
 
 #include "DriverProtocol.hpp"
-#include "Input.hpp"
 
-class Button : public Encoder, public Input {
+class Button : public EncodedInput {
  public:
-  Button(Encoder::Type type, int pin, bool invert) :
+  Button(EncodedInput::Type type, int pin, bool invert) :
     type(type), pin(pin), on_state(invert ? HIGH : LOW), value(false) {}
 
   void setupInput() override {
@@ -33,7 +32,7 @@ class Button : public Encoder, public Input {
   }
 
  private:
-  const Encoder::Type type;
+  const EncodedInput::Type type;
   const int pin;
   const bool on_state;
   bool value;

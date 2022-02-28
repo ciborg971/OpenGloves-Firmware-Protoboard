@@ -3,11 +3,10 @@
 #include "Config.h"
 
 #include "DriverProtocol.hpp"
-#include "Input.hpp"
 
-class JoyStickAxis : public Input, public Encoder {
+class JoyStickAxis : public EncodedInput {
  public:
-  JoyStickAxis(Encoder::Type type, int pin, float dead_zone, bool invert) :
+  JoyStickAxis(EncodedInput::Type type, int pin, float dead_zone, bool invert) :
     type(type), pin(pin), dead_zone(dead_zone), invert(invert), value(ANALOG_MAX/2) {}
 
   void readInput() override {
@@ -48,7 +47,7 @@ class JoyStickAxis : public Input, public Encoder {
     return abs(center - in) < dead_zone * ANALOG_MAX ? center : in;
   }
 
-  Encoder::Type type;
+  EncodedInput::Type type;
   int pin;
   float dead_zone;
   bool invert;

@@ -5,15 +5,14 @@
 #include "Calibration.hpp"
 #include "DriverProtocol.hpp"
 #include "ForceFeedback.hpp"
-#include "Input.hpp"
 
 #if ENABLE_MEDIAN_FILTER
   #include <RunningMedian.h>
 #endif
 
-class Finger : public Encoder, public Input, public Calibrated, public ServoForceFeedback {
+class Finger : public EncodedInput, public Calibrated, public ServoForceFeedback {
  public:
-  Finger(Encoder::Type enc_type, Decoder::Type dec_type, int pin, int servo_pin) :
+  Finger(EncodedInput::Type enc_type, DecodedOuput::Type dec_type, int pin, int servo_pin) :
     ServoForceFeedback(dec_type, servo_pin),
     type(enc_type), pin(pin), value(0),
     median(MEDIAN_SAMPLES), calibrator(0, ANALOG_MAX, CLAMP_ANALOG_MAP) {}
@@ -64,7 +63,7 @@ class Finger : public Encoder, public Input, public Calibrated, public ServoForc
   }
 
  protected:
-  Encoder::Type type;
+  EncodedInput::Type type;
   int pin;
   int value;
 
@@ -79,7 +78,7 @@ class Finger : public Encoder, public Input, public Calibrated, public ServoForc
 
 class SplayFinger : public Finger {
  public:
-  SplayFinger(Encoder::Type enc_type, Decoder::Type dec_type, int pin, int splay_pin, int servo_pin) :
+  SplayFinger(EncodedInput::Type enc_type, DecodedOuput::Type dec_type, int pin, int splay_pin, int servo_pin) :
     Finger(enc_type, dec_type, pin, servo_pin), splay_pin(splay_pin), splay_value(0) {}
 
   void readInput() override {

@@ -1,6 +1,6 @@
 #pragma once
 
-struct Encoder {
+struct EncodedInput {
   enum Type : char {
     THUMB = 'A',
     INDEX = 'B',
@@ -19,23 +19,26 @@ struct Encoder {
     CALIBRATE = 'O'
   };
 
+  virtual void setupInput() {};
   virtual inline int getEncodedSize() const = 0;
   virtual int encode(char* output) const = 0;
+  virtual void readInput() = 0;
 };
 
-struct Decoder {
+struct DecodedOuput {
   enum Type : char {
     THUMB = 'A',
     INDEX = 'B',
     MIDDLE = 'C',
     RING = 'D',
-    PINKY = 'E',
+    PINKY = 'E'
   };
 
-  virtual int decode(const char* input) const = 0;
+  virtual void setupOutput() {};
+  virtual void decodeToOuput(const char* input) = 0;
 };
 
-int encodeAll(char* output, Encoder* encoders[], size_t count) {
+int encodeAll(char* output, EncodedInput* encoders[], size_t count) {
   int offset = 0;
   // Loop over all of the encoders and encode them to the output string.
   for (size_t i = 0; i < count; i++) {

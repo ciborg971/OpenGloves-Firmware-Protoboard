@@ -4,10 +4,8 @@
 #include "Calibration.hpp"
 #include "Finger.hpp"
 #include "Gesture.hpp"
-#include "Input.hpp"
 #include "JoyStick.hpp"
 #include "LED.hpp"
-#include "Output.hpp"
 
 #include "ICommunication.hpp"
 #if COMMUNICATION == COMM_SERIAL
@@ -26,25 +24,25 @@ LED led(PIN_LED);
 #if USING_CALIB_PIN
   // This button is referenced directly by the FW, so we need a pointer to it outside
   // the list of buttons.
-  Button calibration_button(Encoder::Type::CALIB, PIN_CALIB, INVERT_CALIB);
+  Button calibration_button(EncodedInput::Type::CALIB, PIN_CALIB, INVERT_CALIB);
 #endif
 
 Button* buttons[BUTTON_COUNT] = {
-  new Button(Encoder::Type::A_BTN, PIN_A_BTN, INVERT_A),
-  new Button(Encoder::Type::B_BTN, PIN_B_BTN, INVERT_B),
-  new Button(Encoder::Type::MENU, PIN_MENU_BTN, INVERT_MENU),
+  new Button(EncodedInput::Type::A_BTN, PIN_A_BTN, INVERT_A),
+  new Button(EncodedInput::Type::B_BTN, PIN_B_BTN, INVERT_B),
+  new Button(EncodedInput::Type::MENU, PIN_MENU_BTN, INVERT_MENU),
   #if ENABLE_JOYSTICK
-    new Button(Encoder::Type::JOY_BTN, PIN_JOY_BTN, INVERT_JOY),
+    new Button(EncodedInput::Type::JOY_BTN, PIN_JOY_BTN, INVERT_JOY),
   #endif
 
   #if !TRIGGER_GESTURE
-    new Button(Encoder::Type::TRIGGER, PIN_TRIG_BTN, INVERT_TRIGGER),
+    new Button(EncodedInput::Type::TRIGGER, PIN_TRIG_BTN, INVERT_TRIGGER),
   #endif
   #if !GRAB_GESTURE
-    new Button(Encoder::Type::GRAB, PIN_GRAB_BTN, INVERT_GRAB),
+    new Button(EncodedInput::Type::GRAB, PIN_GRAB_BTN, INVERT_GRAB),
   #endif
   #if !PINCH_GESTURE
-    new Button(Encoder::Type::PINCH, PIN_PNCH_BTN, INVERT_PINCH),
+    new Button(EncodedInput::Type::PINCH, PIN_PNCH_BTN, INVERT_PINCH),
   #endif
   #if USING_CALIB_PIN
     &calibration_button,
@@ -53,20 +51,20 @@ Button* buttons[BUTTON_COUNT] = {
 
 #if !ENABLE_SPLAY
   #if ENABLE_THUMB
-  Finger finger_thumb(Encoder::Type::THUMB, Decoder::Type::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  Finger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
   #endif
-  Finger finger_index(Encoder::Type::INDEX, Decoder::Type::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
-  Finger finger_middle(Encoder::Type::MIDDLE, Decoder::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
-  Finger finger_ring(Encoder::Type::RING, Decoder::Type::RING, PIN_RING, PIN_RING_MOTOR);
-  Finger finger_pinky(Encoder::Type::PINKY, Decoder::Type::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
+  Finger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
+  Finger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
+  Finger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::RING, PIN_RING, PIN_RING_MOTOR);
+  Finger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
 #else
   #if ENABLE_THUMB
-  SplayFinger finger_thumb(Encoder::Type::THUMB, Decoder::Type::THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  SplayFinger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
   #endif
-  SplayFinger finger_index(Encoder::Type::INDEX, Decoder::Type::INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
-  SplayFinger finger_middle(Encoder::Type::MIDDLE, Decoder::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
-  SplayFinger finger_ring(Encoder::Type::RING, Decoder::Type::RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
-  SplayFinger finger_pinky(Encoder::Type::PINKY, Decoder::Type::PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
+  SplayFinger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
+  SplayFinger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
+  SplayFinger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
+  SplayFinger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
 #endif
 
 Finger* fingers[FINGER_COUNT] = {
@@ -78,8 +76,8 @@ Finger* fingers[FINGER_COUNT] = {
 
 JoyStickAxis* joysticks[JOYSTICK_COUNT] = {
   #if ENABLE_JOYSTICK
-    new JoyStickAxis(Encoder::Type::JOY_X, PIN_JOY_X, JOYSTICK_DEADZONE, INVERT_JOY_X),
-    new JoyStickAxis(Encoder::Type::JOY_Y, PIN_JOY_Y, JOYSTICK_DEADZONE, INVERT_JOY_Y)
+    new JoyStickAxis(EncodedInput::Type::JOY_X, PIN_JOY_X, JOYSTICK_DEADZONE, INVERT_JOY_X),
+    new JoyStickAxis(EncodedInput::Type::JOY_Y, PIN_JOY_Y, JOYSTICK_DEADZONE, INVERT_JOY_Y)
   #endif
 };
 
@@ -97,10 +95,8 @@ Gesture* gestures[GESTURE_COUNT] = {
 
 // These are composite lists of the above list for a cleaner loop.
 Calibrated* calibrators[CALIBRATED_COUNT];
-Encoder* encoders[INPUT_COUNT];
-Input* inputs[INPUT_COUNT];
-Output* outputs[OUTPUT_COUNT];
-Decoder* decoders[OUTPUT_COUNT];
+EncodedInput* inputs[INPUT_COUNT];
+DecodedOuput* outputs[OUTPUT_COUNT];
 
 char* encoded_output_string;
 
@@ -113,27 +109,23 @@ void setup() {
 
   comm->start();
 
-  // Register the inputs and encoders.
+  // Register the inputs.
   size_t next_input = 0;
   for (size_t i = 0; i < BUTTON_COUNT; next_input++, i++) {
-    encoders[next_input] = buttons[i];
     inputs[next_input] = buttons[i];
   }
 
   for (size_t i = 0; i < FINGER_COUNT; next_input++, i++) {
-    encoders[next_input] = fingers[i];
     inputs[next_input] = fingers[i];
   }
 
   for (size_t i = 0; i < JOYSTICK_COUNT; next_input++, i++) {
-    encoders[next_input] = joysticks[i];
     inputs[next_input] = joysticks[i];
   }
 
   for (size_t i = 0; i < GESTURE_COUNT; next_input++, i++) {
     // Gestures should be at the end of the list since their inputs
     // are based on other inputs.
-    encoders[next_input] = gestures[i];
     inputs[next_input] = gestures[i];
   }
 
@@ -143,11 +135,10 @@ void setup() {
     calibrators[next_calibrator] = fingers[i];
   }
 
-  // Register the outputs and decoders
+  // Register the outputs.
   int next_output = 0;
   #if USING_FORCE_FEEDBACK
     for (size_t i = 0; i < FINGER_COUNT; next_input++, i++) {
-      decoders[next_output] = fingers[i];
       outputs[next_output] = fingers[i];
     }
   #endif
@@ -155,7 +146,7 @@ void setup() {
   // Figure out needed size for the output string.
   int string_size = 0;
   for(size_t i = 0; i < INPUT_COUNT; i++) {
-    string_size += encoders[i]->getEncodedSize();
+    string_size += inputs[i]->getEncodedSize();
   }
 
   // Add 1 new line and 1 for the null terminator.
@@ -172,26 +163,23 @@ void setup() {
   }
 
   // Setup the LED.
-  // TODO: Should this just be in the output list?
-  //       If the driver can send an LED state in the future
-  //       then it will need to be a decoder and an output.
-  led.setupOutput();
+  led.setup();
 }
 
 void loop() {
   if (!comm->isOpen()){
     // Connection to FW not ready, blink the LED to indicate no connection.
-    led.writeOutput(LED::State::BLINK_STEADY);
+    led.setState(LED::State::BLINK_STEADY);
   } else {
     // All is good, LED on to indicate a good connection.
-    led.writeOutput(LED::State::ON);
+    led.setState(LED::State::ON);
   }
 
   char received_bytes[100];
   if (comm->hasData() && comm->readData(received_bytes)) {
     for (size_t i = 0; i < OUTPUT_COUNT; i++) {
       // Decode the update and write it to the output.
-      outputs[i]->writeOutput(decoders[i]->decode(received_bytes));
+      outputs[i]->decodeToOuput(received_bytes);
     }
   }
 
@@ -226,7 +214,7 @@ void loop() {
   }
 
   // Encode all of the outputs to a single string.
-  encodeAll(encoded_output_string, encoders, INPUT_COUNT);
+  encodeAll(encoded_output_string, inputs, INPUT_COUNT);
 
   // Send the string to the communication handler.
   comm->output(encoded_output_string);
