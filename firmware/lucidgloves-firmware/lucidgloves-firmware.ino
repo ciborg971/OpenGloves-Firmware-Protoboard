@@ -99,7 +99,7 @@ void loop() {
   }
 
   // Setup calibration if it was activated in the last loop.
-  #if USING_CALIB_PIN
+  #if ENABLE_ON_DEMAND_CALIBRATION
     bool calibrate_pressed = calibration_button.isPressed();
   #else
     bool calibrate_pressed = false;

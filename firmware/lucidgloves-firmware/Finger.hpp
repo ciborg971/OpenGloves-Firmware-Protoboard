@@ -20,7 +20,7 @@ class Finger : public EncodedInput, public Calibrated {
     int new_value = analogRead(pin);
 
     // Apply configured modifiers.
-    #if FLIP_POTS
+    #if INVERT_FLEXION
       new_value = ANALOG_MAX - new_value;
     #endif
 
@@ -30,8 +30,7 @@ class Finger : public EncodedInput, public Calibrated {
     #endif
 
     #if CLAMP_FLEXION
-      new_value = new_value > CLAMP_MAX ? CLAMP_MAX : new_value;
-      new_value = new_value < CLAMP_MIN ? CLAMP_MIN : new_value;
+      new_value = constrain(new_value, CLAMP_MIN, CLAMP_MAX);
     #endif
 
     // Update the calibration
@@ -58,6 +57,12 @@ class Finger : public EncodedInput, public Calibrated {
 
   virtual int flexionValue() const {
     return value;
+  }
+
+  // Allow others access to the finger's calibrator so they can
+  // map other values on this range.
+  int mapOntoCalibratedRange(int input, int min, int max) const {
+    return calibrator.calibrate(input, min, max);
   }
 
  protected:
