@@ -21,6 +21,13 @@ DecodedOuput* outputs[OUTPUT_COUNT];
 
 char* encoded_output_string;
 
+#define register(source, destination, new_count, existing) \
+do {                                                       \
+  for (size_t i = 0; i < new_count; existing++, i++) {     \
+    destination[existing] = source[i];                     \
+  }                                                        \
+} while(false)
+
 void setup() {
   #if COMMUNICATION == COMM_SERIAL
     comm = new SerialCommunication();
@@ -32,39 +39,19 @@ void setup() {
 
   // Register the inputs.
   size_t next_input = 0;
-  for (size_t i = 0; i < BUTTON_COUNT; next_input++, i++) {
-    inputs[next_input] = buttons[i];
-  }
-
-  for (size_t i = 0; i < FINGER_COUNT; next_input++, i++) {
-    inputs[next_input] = fingers[i];
-  }
-
-  for (size_t i = 0; i < JOYSTICK_COUNT; next_input++, i++) {
-    inputs[next_input] = joysticks[i];
-  }
-
-  for (size_t i = 0; i < GESTURE_COUNT; next_input++, i++) {
-    // Gestures should be at the end of the list since their inputs
-    // are based on other inputs.
-    inputs[next_input] = gestures[i];
-  }
+  register(buttons, inputs, BUTTON_COUNT, next_input);
+  register(fingers, inputs, FINGER_COUNT, next_input);
+  register(joysticks, inputs, JOYSTICK_COUNT, next_input);
+  register(gestures, inputs, GESTURE_COUNT, next_input);
 
   // Register the calibrated inputs
   size_t next_calibrator = 0;
-  for (size_t i = 0; i < FINGER_COUNT; next_calibrator++, i++) {
-    calibrators[next_calibrator] = fingers[i];
-  }
+  register(fingers, calibrators, FINGER_COUNT, next_calibrator);
 
   // Register the outputs.
-  int next_output = 0;
-  for (size_t i = 0; i < FORCE_FEEDBACK_COUNT; next_output++, i++) {
-    outputs[next_output] = force_feedbacks[i];
-  }
-
-  for (size_t i = 0; i < HAPTIC_COUNT; next_output++, i++) {
-    outputs[next_output] = haptics[i];
-  }
+  size_t next_output = 0;
+  register(force_feedbacks, outputs, FORCE_FEEDBACK_COUNT, next_output);
+  register(haptics, outputs, HAPTIC_COUNT, next_output);
 
   // Figure out needed size for the output string.
   int string_size = 0;
