@@ -1,12 +1,6 @@
 #include "Config.h"
 
-#include "Button.hpp"
-#include "Calibration.hpp"
-#include "Finger.hpp"
-#include "Gesture.hpp"
-#include "Haptics.hpp"
-#include "JoyStick.hpp"
-#include "LED.hpp"
+#include "HardwareConfig.hpp"
 
 #include "ICommunication.hpp"
 #if COMMUNICATION == COMM_SERIAL
@@ -20,87 +14,7 @@
 ICommunication* comm;
 int calibration_count = 0;
 
-LED led(PIN_LED);
-
-#if USING_CALIB_PIN
-  // This button is referenced directly by the FW, so we need a pointer to it outside
-  // the list of buttons.
-  Button calibration_button(EncodedInput::Type::CALIB, PIN_CALIB, INVERT_CALIB);
-#endif
-
-Button* buttons[BUTTON_COUNT] = {
-  new Button(EncodedInput::Type::A_BTN, PIN_A_BTN, INVERT_A),
-  new Button(EncodedInput::Type::B_BTN, PIN_B_BTN, INVERT_B),
-  new Button(EncodedInput::Type::MENU, PIN_MENU_BTN, INVERT_MENU),
-  #if ENABLE_JOYSTICK
-    new Button(EncodedInput::Type::JOY_BTN, PIN_JOY_BTN, INVERT_JOY),
-  #endif
-
-  #if !TRIGGER_GESTURE
-    new Button(EncodedInput::Type::TRIGGER, PIN_TRIG_BTN, INVERT_TRIGGER),
-  #endif
-  #if !GRAB_GESTURE
-    new Button(EncodedInput::Type::GRAB, PIN_GRAB_BTN, INVERT_GRAB),
-  #endif
-  #if !PINCH_GESTURE
-    new Button(EncodedInput::Type::PINCH, PIN_PNCH_BTN, INVERT_PINCH),
-  #endif
-  #if USING_CALIB_PIN
-    &calibration_button,
-  #endif
-};
-
-#if !ENABLE_SPLAY
-  #if ENABLE_THUMB
-  Finger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::FFB_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
-  #endif
-  Finger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::FFB_INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
-  Finger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::FFB_MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
-  Finger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::FFB_RING, PIN_RING, PIN_RING_MOTOR);
-  Finger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::FFB_PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
-#else
-  #if ENABLE_THUMB
-  SplayFinger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::FFB_THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
-  #endif
-  SplayFinger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::FFB_INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
-  SplayFinger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::FFB_MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
-  SplayFinger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::FFB_RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
-  SplayFinger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::FFB_PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
-#endif
-
-Finger* fingers[FINGER_COUNT] = {
-  #if ENABLE_THUMB
-    &finger_thumb,
-  #endif
-  &finger_index, &finger_middle, &finger_ring, &finger_pinky
-};
-
-JoyStickAxis* joysticks[JOYSTICK_COUNT] = {
-  #if ENABLE_JOYSTICK
-    new JoyStickAxis(EncodedInput::Type::JOY_X, PIN_JOY_X, JOYSTICK_DEADZONE, INVERT_JOY_X),
-    new JoyStickAxis(EncodedInput::Type::JOY_Y, PIN_JOY_Y, JOYSTICK_DEADZONE, INVERT_JOY_Y)
-  #endif
-};
-
-Gesture* gestures[GESTURE_COUNT] = {
-  #if TRIGGER_GESTURE
-    new TriggerGesture(&finger_index),
-  #endif
-  #if GRAB_GESTURE
-    new GrabGesture(&finger_index, &finger_middle, &finger_ring, &finger_pinky),
-  #endif
-  #if PINCH_GESTURE
-    new PinchGesture(&finger_thumb, &finger_index)
-  #endif
-};
-
-HapticMotor* haptics[HAPTIC_COUNT] = {
-  #if ENABLE_HAPTICS
-    new HapticMotor(DecodedOuput::Type::HAPTIC_FREQ, DecodedOuput::Type::HAPTIC_DURATION, DecodedOuput::Type::HAPTIC_AMPLITUDE, PIN_HAPTIC_MOTOR),
-  #endif
-};
-
-// These are composite lists of the above list for a cleaner loop.
+// These are composite lists of the hardware defined in the header above.
 Calibrated* calibrators[CALIBRATED_COUNT];
 EncodedInput* inputs[INPUT_COUNT];
 DecodedOuput* outputs[OUTPUT_COUNT];
@@ -144,11 +58,9 @@ void setup() {
 
   // Register the outputs.
   int next_output = 0;
-  #if USING_FORCE_FEEDBACK
-    for (size_t i = 0; i < FINGER_COUNT; next_output++, i++) {
-      outputs[next_output] = fingers[i];
-    }
-  #endif
+  for (size_t i = 0; i < FORCE_FEEDBACK_COUNT; next_output++, i++) {
+    outputs[next_output] = force_feedbacks[i];
+  }
 
   for (size_t i = 0; i < HAPTIC_COUNT; next_output++, i++) {
     outputs[next_output] = haptics[i];
@@ -186,20 +98,7 @@ void loop() {
     led.setState(LED::State::ON);
   }
 
-  char received_bytes[100];
-  if (comm->hasData() && comm->readData(received_bytes)) {
-    for (size_t i = 0; i < OUTPUT_COUNT; i++) {
-      // Decode the update and write it to the output.
-      outputs[i]->decodeToOuput(received_bytes);
-    }
-  }
-
-  // Update all the inputs
-  for (int i = 0; i < INPUT_COUNT; i++) {
-    inputs[i]->readInput();
-  }
-
-  // Setup calibration to be activated in the next loop iteration.
+  // Setup calibration if it was activated in the last loop.
   #if USING_CALIB_PIN
     bool calibrate_pressed = calibration_button.isPressed();
   #else
@@ -224,11 +123,29 @@ void loop() {
     }
   }
 
+  // Update all the inputs
+  for (int i = 0; i < INPUT_COUNT; i++) {
+    inputs[i]->readInput();
+  }
+
   // Encode all of the outputs to a single string.
   encodeAll(encoded_output_string, inputs, INPUT_COUNT);
 
   // Send the string to the communication handler.
   comm->output(encoded_output_string);
+
+  char received_bytes[100];
+  if (comm->hasData() && comm->readData(received_bytes)) {
+    for (size_t i = 0; i < OUTPUT_COUNT; i++) {
+      // Decode the update and write it to the output.
+      outputs[i]->decodeToOuput(received_bytes);
+    }
+  }
+
+  // Allow all the outputs to update their state.
+  for (size_t i = 0; i < OUTPUT_COUNT; i++) {
+    outputs[i]->updateOutput();
+  }
 
   delay(LOOP_TIME);
 }

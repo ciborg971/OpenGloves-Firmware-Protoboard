@@ -8,7 +8,7 @@ class HapticMotor : public DecodedOuput {
  public:
   HapticMotor(DecodedOuput::Type frequency_key, DecodedOuput::Type duration_key, DecodedOuput::Type amplitude_key, int motor_pin) :
     frequency_key(frequency_key), duration_key(duration_key), amplitude_key(amplitude_key), motor_pin(motor_pin),
-    frequency(0), duration(0), amplitude(0) {}
+    frequency(0), duration(0), amplitude(0), haptic_start(0) {}
 
   void setupOutput() override {
     pinMode(motor_pin, OUTPUT);
@@ -24,11 +24,18 @@ class HapticMotor : public DecodedOuput {
 
     start = strchr(input, amplitude_key);
     amplitude = start == NULL ? -1 : atoi(start + 1);
+    haptic_start = millis();
+  }
 
-    // TODO: actually do something with those values
-    // We should probably use a wave form generator to output
-    // the vibration, then use a timer that will generate an
-    // interrupt to turn it back off after the specified duration.
+  void updateOutput() override {
+    if (duration > 0 && millis() < haptic_start + duration) {
+      // If there is duration remaining, keep the motor on.
+      digitalWrite(motor_pin, HIGH);
+    } else {
+      // Duration has expired, keep the motor off.
+      digitalWrite(motor_pin, LOW);
+      duration = 0;
+    }
   }
 
  protected:
@@ -39,4 +46,5 @@ class HapticMotor : public DecodedOuput {
   int frequency;
   int duration;
   int amplitude;
+  int haptic_start;
 };

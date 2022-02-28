@@ -1,6 +1,7 @@
-#pragma
+#pragma once
 
 #include "DriverProtocol.hpp"
+#include "Finger.hpp"
 
 #if defined(ESP32)
   #include <ESP32Servo.h>
@@ -22,7 +23,8 @@ class ForceFeedback : public DecodedOuput {
   int limit;
 };
 
-
+// Servo based force feedback that moves the servo to the limiting
+// postion.
 class ServoForceFeedback : public ForceFeedback {
  public:
   ServoForceFeedback(DecodedOuput::Type type, int servo_pin) : ForceFeedback(type), servo_pin(servo_pin) {}
@@ -33,8 +35,7 @@ class ServoForceFeedback : public ForceFeedback {
     servo.write(0);
   };
 
-  void decodeToOuput(const char* input) override {
-    ForceFeedback::decodeToOuput(input);
+  void updateOutput() override {
     servo.write(scale(limit));
   }
 
@@ -45,4 +46,26 @@ class ServoForceFeedback : public ForceFeedback {
 
   int servo_pin;
   Servo servo;
+};
+
+// Clamping FFB that writes the state to a digital output.
+// This could be used to actuate a solenoid or some other
+// binary brake.
+class ClampForceFeedback : public ForceFeedback {
+ public:
+  ClampForceFeedback(DecodedOuput::Type type, const Finger* finger, int pin) :
+    ForceFeedback(type), finger(finger), pin(pin) {}
+
+  void setupOutput() {
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+  };
+
+  void updateOutput() override {
+    digitalWrite(pin, finger->flexionValue() >= limit);
+  }
+
+ protected:
+  const Finger* finger;
+  int pin;
 };
