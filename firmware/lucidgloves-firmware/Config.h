@@ -51,9 +51,10 @@
 #define GRAB_GESTURE    true
 #define PINCH_GESTURE   (true && ENABLE_THUMB) // Cannot be enabled if there is no thumb
 
-// Force Feedback setting
+// Force Feedback and haptic settings
 #define USING_FORCE_FEEDBACK false //Force feedback haptics allow you to feel the solid objects you hold
 #define SERVO_SCALING false //dynamic scaling of servo motors
+#define ENABLE_HAPTICS false
 
 // Counts of objects in the system used for looping
 #define GESTURE_COUNT (TRIGGER_GESTURE + GRAB_GESTURE + PINCH_GESTURE)
@@ -61,8 +62,9 @@
 #define JOYSTICK_COUNT (ENABLE_JOYSTICK ? 2 : 0)
 #define BUTTON_COUNT (3 + ENABLE_JOYSTICK + !TRIGGER_GESTURE + !GRAB_GESTURE + !PINCH_GESTURE + USING_CALIB_PIN)
 #define INPUT_COUNT (BUTTON_COUNT+FINGER_COUNT+GESTURE_COUNT+JOYSTICK_COUNT)
+#define HAPTIC_COUNT (ENABLE_HAPTICS ? 1 : 0)
 #define CALIBRATED_COUNT FINGER_COUNT
-#define OUTPUT_COUNT (USING_FORCE_FEEDBACK ? FINGER_COUNT : 0)
+#define OUTPUT_COUNT (HAPTIC_COUNT + (USING_FORCE_FEEDBACK ? FINGER_COUNT : 0))
 
 //PINS CONFIGURATION
 #if defined(__AVR__)
@@ -87,6 +89,7 @@
   #define PIN_MIDDLE_MOTOR    4 //^
   #define PIN_INDEX_MOTOR     5 //^
   #define PIN_THUMB_MOTOR     6 //^
+  #define PIN_HAPTIC_MOTOR    1
   #define PIN_MENU_BTN        8
   #define PIN_PINKY_SPLAY     1
   #define PIN_RING_SPLAY      1
@@ -115,6 +118,7 @@
   #define PIN_MIDDLE_MOTOR    19 //^
   #define PIN_INDEX_MOTOR     21 //^
   #define PIN_THUMB_MOTOR     17 //^
+  #define PIN_HAPTIC_MOTOR    1
   #define PIN_MENU_BTN        27
   #define PIN_PINKY_SPLAY     1
   #define PIN_RING_SPLAY      1

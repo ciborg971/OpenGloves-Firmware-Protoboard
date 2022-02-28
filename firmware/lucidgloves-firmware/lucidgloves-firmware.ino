@@ -4,6 +4,7 @@
 #include "Calibration.hpp"
 #include "Finger.hpp"
 #include "Gesture.hpp"
+#include "Haptics.hpp"
 #include "JoyStick.hpp"
 #include "LED.hpp"
 
@@ -51,20 +52,20 @@ Button* buttons[BUTTON_COUNT] = {
 
 #if !ENABLE_SPLAY
   #if ENABLE_THUMB
-  Finger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  Finger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::FFB_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
   #endif
-  Finger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
-  Finger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
-  Finger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::RING, PIN_RING, PIN_RING_MOTOR);
-  Finger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
+  Finger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::FFB_INDEX, PIN_INDEX, PIN_INDEX_MOTOR);
+  Finger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::FFB_MIDDLE, PIN_MIDDLE, PIN_MIDDLE_MOTOR);
+  Finger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::FFB_RING, PIN_RING, PIN_RING_MOTOR);
+  Finger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::FFB_PINKY, PIN_PINKY, PIN_PINKY_MOTOR);
 #else
   #if ENABLE_THUMB
-  SplayFinger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
+  SplayFinger finger_thumb(EncodedInput::Type::THUMB, DecodedOuput::Type::FFB_THUMB, PIN_THUMB, PIN_THUMB, PIN_THUMB_MOTOR);
   #endif
-  SplayFinger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
-  SplayFinger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
-  SplayFinger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
-  SplayFinger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
+  SplayFinger finger_index(EncodedInput::Type::INDEX, DecodedOuput::Type::FFB_INDEX, PIN_INDEX, PIN_INDEX_SPLAY, PIN_INDEX_MOTOR);
+  SplayFinger finger_middle(EncodedInput::Type::MIDDLE, DecodedOuput::Type::FFB_MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY, PIN_MIDDLE_MOTOR);
+  SplayFinger finger_ring(EncodedInput::Type::RING, DecodedOuput::Type::FFB_RING, PIN_RING, PIN_RING_SPLAY, PIN_RING_MOTOR);
+  SplayFinger finger_pinky(EncodedInput::Type::PINKY, DecodedOuput::Type::FFB_PINKY, PIN_PINKY, PIN_PINKY_SPLAY, PIN_PINKY_MOTOR);
 #endif
 
 Finger* fingers[FINGER_COUNT] = {
@@ -90,6 +91,12 @@ Gesture* gestures[GESTURE_COUNT] = {
   #endif
   #if PINCH_GESTURE
     new PinchGesture(&finger_thumb, &finger_index)
+  #endif
+};
+
+HapticMotor* haptics[HAPTIC_COUNT] = {
+  #if ENABLE_HAPTICS
+    new HapticMotor(DecodedOuput::Type::HAPTIC_FREQ, DecodedOuput::Type::HAPTIC_DURATION, DecodedOuput::Type::HAPTIC_AMPLITUDE, PIN_HAPTIC_MOTOR),
   #endif
 };
 
@@ -138,10 +145,14 @@ void setup() {
   // Register the outputs.
   int next_output = 0;
   #if USING_FORCE_FEEDBACK
-    for (size_t i = 0; i < FINGER_COUNT; next_input++, i++) {
+    for (size_t i = 0; i < FINGER_COUNT; next_output++, i++) {
       outputs[next_output] = fingers[i];
     }
   #endif
+
+  for (size_t i = 0; i < HAPTIC_COUNT; next_output++, i++) {
+    outputs[next_output] = haptics[i];
+  }
 
   // Figure out needed size for the output string.
   int string_size = 0;
@@ -168,7 +179,7 @@ void setup() {
 
 void loop() {
   if (!comm->isOpen()){
-    // Connection to FW not ready, blink the LED to indicate no connection.
+    // Connection to Driver not ready, blink the LED to indicate no connection.
     led.setState(LED::State::BLINK_STEADY);
   } else {
     // All is good, LED on to indicate a good connection.
