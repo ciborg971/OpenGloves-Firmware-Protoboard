@@ -106,14 +106,14 @@ void loop() {
   #endif
 
   // Notify the calibrators to turn on.
-  if (calibrate_pressed) {
+  if (calibrate_pressed || ALWAYS_CALIBRATING) {
     calibration_count = 0;
     for (size_t i = 0; i < CALIBRATED_COUNT; i++) {
       calibrators[i]->enableCalibration();
     }
   }
 
-  if (calibration_count < CALIBRATION_LOOPS || ALWAYS_CALIBRATING){
+  if (calibration_count < CALIBRATION_LOOPS || ALWAYS_CALIBRATING) {
     // Keep calibrating for one at least one more loop.
     calibration_count++;
   } else {
