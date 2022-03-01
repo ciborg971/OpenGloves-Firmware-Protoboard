@@ -10,23 +10,21 @@ class Gesture : public EncodedInput {
   Gesture(EncodedInput::Type type) : type(type), value(false) {}
 
   inline int getEncodedSize() const override {
-   // Encode string size = single char + '\0'
-    return 2;
+   // Encode string size = single char or '\0'
+    return 1;
   }
 
   int encode(char* output) const override {
-    output[0] = value ? type : '\0';
-    return value ? getEncodedSize() : 1;
+    if (value) output[0] = type;
+    return value ? 1 : 0;
   }
 
   bool isPressed() {
     return value;
   }
 
- private:
-  EncodedInput::Type type;
-
  protected:
+  const EncodedInput::Type type;
   bool value;
 };
 

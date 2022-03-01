@@ -7,24 +7,24 @@
 class Button : public EncodedInput {
  public:
   Button(EncodedInput::Type type, int pin, bool invert) :
-    type(type), pin(pin), on_state(invert ? HIGH : LOW), value(false) {}
+    type(type), pin(pin), on_state(invert ? LOW : HIGH), value(false) {}
 
   void setupInput() override {
     pinMode(PIN_JOY_BTN, INPUT_PULLUP);
   }
 
   virtual void readInput() {
-    value = digitalRead(pin) == on_state;
+    value = (digitalRead(pin) == on_state);
   }
 
   inline int getEncodedSize() const override {
-    // Encode string size = single char + '\0'
-    return 2;
+    // Encode string size = single char
+    return 1;
   }
 
   int encode(char* output) const override {
-    output[0] = value ? type : '\0';
-    return value ? getEncodedSize() : 1;
+    if (value) output[0] = type;
+    return value ? 1 : 0;
   }
 
   bool isPressed() const {

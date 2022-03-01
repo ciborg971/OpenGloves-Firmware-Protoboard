@@ -32,7 +32,7 @@ class BTSerialCommunication : public ICommunication {
       return m_SerialBT.available() > 0;
     }
 
-    bool readData(char* input){
+    bool readData(char* input, size_t buffer_size){
       /*byte size = m_SerialBT.readBytesUntil('\n', input, 100);
       input[size] = NULL;*/
       String message = m_SerialBT.readStringUntil('\n');

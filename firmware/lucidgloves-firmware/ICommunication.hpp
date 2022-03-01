@@ -6,5 +6,5 @@ struct ICommunication {
   virtual void start() = 0;
   virtual void output(char* data) = 0;
   virtual bool hasData() = 0;
-  virtual bool readData(char* input) = 0;
+  virtual bool readData(char* input, size_t buffer_size) = 0;
 };

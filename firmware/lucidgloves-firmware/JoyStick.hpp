@@ -26,8 +26,8 @@ class JoyStickAxis : public EncodedInput {
   }
 
   inline int getEncodedSize() const override {
-    // Encode string size = AXXXX
-    return 5;
+    // Encode string size = AXXXX + '\0'
+    return 6;
   }
 
   int encode(char* output) const override {

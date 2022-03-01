@@ -44,7 +44,7 @@ class MinMaxCalibrator {
     if (value_min > value_max) return (output_min + output_max) / 2.0f;
 
     // Map the input range to the output range.
-    T output = map(input, input_min, input_max, value_min, value_max);
+    T output = map(input, value_min, value_max, input_min, input_max);
     return clamp ? constrain(output, output_min, output_max) : output;
   }
 

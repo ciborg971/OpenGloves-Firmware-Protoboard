@@ -21,6 +21,7 @@ DecodedOuput* outputs[OUTPUT_COUNT];
 
 char* encoded_output_string;
 
+// Common pattern for registering inputs and outputs
 #define register(source, destination, new_count, existing) \
 do {                                                       \
   for (size_t i = 0; i < new_count; existing++, i++) {     \
@@ -74,6 +75,12 @@ void setup() {
 
   // Setup the LED.
   led.setup();
+
+  if (ALWAYS_CALIBRATING) {
+    for (size_t i = 0; i < CALIBRATED_COUNT; i++) {
+      calibrators[i]->enableCalibration();
+    }
+  }
 }
 
 void loop() {
@@ -85,17 +92,11 @@ void loop() {
     led.setState(LED::State::ON);
   }
 
-  // Setup calibration if it was activated in the last loop.
-  #if ENABLE_ON_DEMAND_CALIBRATION
-    bool calibrate_pressed = calibration_button.isPressed();
-  #else
-    bool calibrate_pressed = false;
-  #endif
-
   // Notify the calibrators to turn on.
-  if (calibrate_pressed || ALWAYS_CALIBRATING) {
+  if (calibration_button.isPressed()) {
     calibration_count = 0;
     for (size_t i = 0; i < CALIBRATED_COUNT; i++) {
+      calibrators[i]->resetCalibration();
       calibrators[i]->enableCalibration();
     }
   }
@@ -122,7 +123,7 @@ void loop() {
   comm->output(encoded_output_string);
 
   char received_bytes[100];
-  if (comm->hasData() && comm->readData(received_bytes)) {
+  if (comm->hasData() && comm->readData(received_bytes, 100)) {
     for (size_t i = 0; i < OUTPUT_COUNT; i++) {
       // Decode the update and write it to the output.
       outputs[i]->decodeToOuput(received_bytes);

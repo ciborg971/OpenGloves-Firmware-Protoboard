@@ -31,7 +31,6 @@
 #define INVERT_TRIGGER  false // Does nothing if gesture is enabled
 #define INVERT_GRAB     false // Does nothing if gesture is enabled
 #define INVERT_PINCH    false // Does nothing if gesture is enabled
-#define ENABLE_ON_DEMAND_CALIBRATION false // If enabled a button on PIN_CALIB can reset calibration.
 
 // Joystick configuration
 #define ENABLE_JOYSTICK  true // make false if not using the joystick
@@ -66,18 +65,19 @@
 
 #define FORCE_FEEDBACK_CLAMP_UNLOCK       LOW
 #define FORCE_FEEDBACK_CLAMP_LOCK         HIGH
-#define FORCE_FEEDBACK_SERVO_CLAMP_UNLOCK 180
-#define FORCE_FEEDBACK_SERVO_CLAMP_LOCK   155
+#define FORCE_FEEDBACK_SERVO_CLAMP_UNLOCK 0
+#define FORCE_FEEDBACK_SERVO_CLAMP_LOCK   20
 
-#define FORCE_FEEDBACK_MIN 0    // The driver sends values from 0-1000 today.
-#define FORCE_FEEDBACK_MAX 1000 // The driver sends values from 0-1000 today.
+#define FORCE_FEEDBACK_MIN      0 // Value of 0 means no limit.
+#define FORCE_FEEDBACK_MAX   1000 // Value of 1000 means maximum limit.
+#define FORCE_FEEDBACK_RELEASE 50 // To prevent hardware damage, value passed the limit for when to release FFB. (Set to FORCE_FEEDBACK_MAX to disable)
 
 // Counts of objects in the system used for looping
 #define GESTURE_COUNT        (TRIGGER_GESTURE + GRAB_GESTURE + PINCH_GESTURE)
 #define FINGER_COUNT         (ENABLE_THUMB ? 5 : 4)
 #define JOYSTICK_COUNT       (ENABLE_JOYSTICK ? 2 : 0)
-#define BUTTON_COUNT         (3 + ENABLE_JOYSTICK + !TRIGGER_GESTURE + !GRAB_GESTURE + !PINCH_GESTURE + ENABLE_ON_DEMAND_CALIBRATION)
-#define INPUT_COUNT          (BUTTON_COUNT+FINGER_COUNT+GESTURE_COUNT+JOYSTICK_COUNT)
+#define BUTTON_COUNT         (4 + ENABLE_JOYSTICK + !TRIGGER_GESTURE + !GRAB_GESTURE + !PINCH_GESTURE)
+#define INPUT_COUNT          (BUTTON_COUNT+FINGER_COUNT+JOYSTICK_COUNT+GESTURE_COUNT)
 #define HAPTIC_COUNT         (ENABLE_HAPTICS ? 1 : 0)
 #define FORCE_FEEDBACK_COUNT (ENABLE_FORCE_FEEDBACK ? FINGER_COUNT : 0)
 #define CALIBRATED_COUNT     FINGER_COUNT
@@ -96,18 +96,18 @@
   #define PIN_JOY_BTN         7
   #define PIN_A_BTN           8
   #define PIN_B_BTN           9
+  #define PIN_MENU_BTN        8
   #define PIN_TRIG_BTN        10 //unused if gesture set
   #define PIN_GRAB_BTN        11 //unused if gesture set
   #define PIN_PNCH_BTN        12 //unused if gesture set
   #define PIN_CALIB           13 //button for recalibration
   #define PIN_LED             LED_BUILTIN
-  #define PIN_PINKY_MOTOR     2 //used for force feedback
-  #define PIN_RING_MOTOR      3 //^
-  #define PIN_MIDDLE_MOTOR    4 //^
-  #define PIN_INDEX_MOTOR     5 //^
-  #define PIN_THUMB_MOTOR     6 //^
-  #define PIN_HAPTIC_MOTOR    1
-  #define PIN_MENU_BTN        8
+  #define PIN_PINKY_FFB       2 //used for force feedback
+  #define PIN_RING_FFB        3 //^
+  #define PIN_MIDDLE_FFB      4 //^
+  #define PIN_INDEX_FFB       5 //^
+  #define PIN_THUMB_FFB       6 //^
+  #define PIN_HAPTIC          1
   #define PIN_PINKY_SPLAY     1
   #define PIN_RING_SPLAY      1
   #define PIN_MIDDLE_SPLAY    1
@@ -125,18 +125,18 @@
   #define PIN_JOY_BTN         26
   #define PIN_A_BTN           27
   #define PIN_B_BTN           14
+  #define PIN_MENU_BTN        27
   #define PIN_TRIG_BTN        12 //unused if gesture set
   #define PIN_GRAB_BTN        13 //unused if gesture set
   #define PIN_PNCH_BTN        23 //unused if gesture set
   #define PIN_CALIB           12 //button for recalibration
   #define PIN_LED             2
-  #define PIN_PINKY_MOTOR     5  //used for force feedback
-  #define PIN_RING_MOTOR      18 //^
-  #define PIN_MIDDLE_MOTOR    19 //^
-  #define PIN_INDEX_MOTOR     21 //^
-  #define PIN_THUMB_MOTOR     17 //^
-  #define PIN_HAPTIC_MOTOR    1
-  #define PIN_MENU_BTN        27
+  #define PIN_PINKY_FFB       5  //used for force feedback
+  #define PIN_RING_FFB        18 //^
+  #define PIN_MIDDLE_FFB      19 //^
+  #define PIN_INDEX_FFB       21 //^
+  #define PIN_THUMB_FFB       17 //^
+  #define PIN_HAPTIC          1
   #define PIN_PINKY_SPLAY     1
   #define PIN_RING_SPLAY      1
   #define PIN_MIDDLE_SPLAY    1

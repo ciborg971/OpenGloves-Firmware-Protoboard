@@ -13,20 +13,18 @@
 
 LED led(PIN_LED);
 
-#if ENABLE_ON_DEMAND_CALIBRATION
-  // This button is referenced directly by the FW, so we need a pointer to it outside
-  // the list of buttons.
-  Button calibration_button(EncodedInput::Type::CALIB, PIN_CALIB, INVERT_CALIB);
-#endif
+// This button is referenced directly by the FW, so we need a pointer to it outside
+// the list of buttons.
+Button calibration_button(EncodedInput::Type::CALIBRATE, PIN_CALIB, INVERT_CALIB);
 
 Button* buttons[BUTTON_COUNT] = {
   new Button(EncodedInput::Type::A_BTN, PIN_A_BTN, INVERT_A),
   new Button(EncodedInput::Type::B_BTN, PIN_B_BTN, INVERT_B),
   new Button(EncodedInput::Type::MENU, PIN_MENU_BTN, INVERT_MENU),
+  &calibration_button,
   #if ENABLE_JOYSTICK
     new Button(EncodedInput::Type::JOY_BTN, PIN_JOY_BTN, INVERT_JOY),
   #endif
-
   #if !TRIGGER_GESTURE
     new Button(EncodedInput::Type::TRIGGER, PIN_TRIG_BTN, INVERT_TRIGGER),
   #endif
@@ -36,9 +34,7 @@ Button* buttons[BUTTON_COUNT] = {
   #if !PINCH_GESTURE
     new Button(EncodedInput::Type::PINCH, PIN_PNCH_BTN, INVERT_PINCH),
   #endif
-  #if ENABLE_ON_DEMAND_CALIBRATION
-    &calibration_button,
-  #endif
+
 };
 
 #if !ENABLE_SPLAY
@@ -90,7 +86,7 @@ HapticMotor* haptics[HAPTIC_COUNT] = {
   #if ENABLE_HAPTICS
     new HapticMotor(DecodedOuput::Type::HAPTIC_FREQ,
                     DecodedOuput::Type::HAPTIC_DURATION,
-                    DecodedOuput::Type::HAPTIC_AMPLITUDE, PIN_HAPTIC_MOTOR),
+                    DecodedOuput::Type::HAPTIC_AMPLITUDE, PIN_HAPTIC),
   #endif
 };
 
@@ -98,28 +94,28 @@ ForceFeedback* force_feedbacks[FORCE_FEEDBACK_COUNT] {
   #if ENABLE_FORCE_FEEDBACK
     #if FORCE_FEEDBACK_STYLE == FORCE_FEEDBACK_STYLE_SERVO
       #if ENABLE_THUMB
-        new ServoForceFeedback(DecodedOuput::Type::FFB_THUMB, &finger_thumb, PIN_THUMB_MOTOR),
+        new ServoForceFeedback(DecodedOuput::Type::FFB_THUMB, &finger_thumb, PIN_THUMB_FFB),
       #endif
-      new ServoForceFeedback(DecodedOuput::Type::FFB_INDEX, &finger_index, PIN_INDEX_MOTOR),
-      new ServoForceFeedback(DecodedOuput::Type::FFB_MIDDLE, &finger_middle, PIN_MIDDLE_MOTOR),
-      new ServoForceFeedback(DecodedOuput::Type::FFB_RING, &finger_ring, PIN_RING_MOTOR),
-      new ServoForceFeedback(DecodedOuput::Type::FFB_PINKY, &finger_pinky, PIN_PINKY_MOTOR)
+      new ServoForceFeedback(DecodedOuput::Type::FFB_INDEX, &finger_index, PIN_INDEX_FFB),
+      new ServoForceFeedback(DecodedOuput::Type::FFB_MIDDLE, &finger_middle, PIN_MIDDLE_FFB),
+      new ServoForceFeedback(DecodedOuput::Type::FFB_RING, &finger_ring, PIN_RING_FFB),
+      new ServoForceFeedback(DecodedOuput::Type::FFB_PINKY, &finger_pinky, PIN_PINKY_FFB)
     #elif FORCE_FEEDBACK_STYLE == FORCE_FEEDBACK_STYLE_CLAMP
       #if ENABLE_THUMB
-        new ClampForceFeedback(DecodedOuput::Type::FFB_THUMB, &finger_thumb, PIN_THUMB_MOTOR),
+        new DigitalClampForceFeedback(DecodedOuput::Type::FFB_THUMB, &finger_thumb, PIN_THUMB_FFB),
       #endif
-      new ClampForceFeedback(DecodedOuput::Type::FFB_INDEX, &finger_index, PIN_INDEX_MOTOR),
-      new ClampForceFeedback(DecodedOuput::Type::FFB_MIDDLE, &finger_middle, PIN_MIDDLE_MOTOR),
-      new ClampForceFeedback(DecodedOuput::Type::FFB_RING, &finger_ring, PIN_RING_MOTOR),
-      new ClampForceFeedback(DecodedOuput::Type::FFB_PINKY, &finger_pinky, PIN_PINKY_MOTOR)
+      new DigitalClampForceFeedback(DecodedOuput::Type::FFB_INDEX, &finger_index, PIN_INDEX_FFB),
+      new DigitalClampForceFeedback(DecodedOuput::Type::FFB_MIDDLE, &finger_middle, PIN_MIDDLE_FFB),
+      new DigitalClampForceFeedback(DecodedOuput::Type::FFB_RING, &finger_ring, PIN_RING_FFB),
+      new DigitalClampForceFeedback(DecodedOuput::Type::FFB_PINKY, &finger_pinky, PIN_PINKY_FFB)
     #elif FORCE_FEEDBACK_STYLE == FORCE_FEEDBACK_STYLE_SERVO_CLAMP
       #if ENABLE_THUMB
-        new ServoClampForceFeedback(DecodedOuput::Type::FFB_THUMB, &finger_thumb, PIN_THUMB_MOTOR),
+        new ServoClampForceFeedback(DecodedOuput::Type::FFB_THUMB, &finger_thumb, PIN_THUMB_FFB),
       #endif
-      new ServoClampForceFeedback(DecodedOuput::Type::FFB_INDEX, &finger_index, PIN_INDEX_MOTOR),
-      new ServoClampForceFeedback(DecodedOuput::Type::FFB_MIDDLE, &finger_middle, PIN_MIDDLE_MOTOR),
-      new ServoClampForceFeedback(DecodedOuput::Type::FFB_RING, &finger_ring, PIN_RING_MOTOR),
-      new ServoClampForceFeedback(DecodedOuput::Type::FFB_PINKY, &finger_pinky, PIN_PINKY_MOTOR)
+      new ServoClampForceFeedback(DecodedOuput::Type::FFB_INDEX, &finger_index, PIN_INDEX_FFB),
+      new ServoClampForceFeedback(DecodedOuput::Type::FFB_MIDDLE, &finger_middle, PIN_MIDDLE_FFB),
+      new ServoClampForceFeedback(DecodedOuput::Type::FFB_RING, &finger_ring, PIN_RING_FFB),
+      new ServoClampForceFeedback(DecodedOuput::Type::FFB_PINKY, &finger_pinky, PIN_PINKY_FFB)
     #endif
   #endif
 };

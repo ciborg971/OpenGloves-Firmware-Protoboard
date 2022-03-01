@@ -30,9 +30,9 @@ class SerialCommunication : public ICommunication {
       return Serial.available() > 0;
     }
 
-    bool readData(char* input){
-      byte size = Serial.readBytesUntil('\n', input, 100);
+    bool readData(char* input, size_t buffer_size){
+      size_t size = Serial.readBytesUntil('\n', input, buffer_size);
       input[size] = NULL;
-      return input != NULL && strlen(input) > 0;
+      return size > 0;
     }
 };

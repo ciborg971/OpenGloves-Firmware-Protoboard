@@ -43,8 +43,8 @@ class Finger : public EncodedInput, public Calibrated {
   }
 
   inline int getEncodedSize() const override {
-    // Encode string size = AXXXX
-    return 5;
+    // Encode string size = AXXXX + '\0'
+    return 6;
   }
 
   int encode(char* output) const override {
@@ -90,8 +90,8 @@ class SplayFinger : public Finger {
   }
 
   inline int getEncodedSize() const override {
-    // Encoded string size = AXXXX(AB)XXXX
-    return 13;
+    // Encoded string size = AXXXX(AB)XXXX + '\0'
+    return 14;
   }
 
   int encode(char* output) const override {

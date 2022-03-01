@@ -17,13 +17,20 @@ class HapticMotor : public DecodedOuput {
 
   void decodeToOuput(const char* input) override {
     char* start = strchr(input, frequency_key);
-    frequency = start == NULL ? -1 : atoi(start + 1);
+    if (start != NULL) {
+      frequency = atoi(start + 1);
+    }
 
     start = strchr(input, duration_key);
-    duration = start == NULL ? -1 : atoi(start + 1);
+    if (start != NULL) {
+      duration = atoi(start + 1);
+    }
 
     start = strchr(input, amplitude_key);
-    amplitude = start == NULL ? -1 : atoi(start + 1);
+    if (start != NULL) {
+      amplitude = atoi(start + 1);
+    }
+
     haptic_start = millis();
   }
 
