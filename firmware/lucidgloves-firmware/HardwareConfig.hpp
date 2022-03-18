@@ -47,7 +47,7 @@ Button* buttons[BUTTON_COUNT] = {
   Finger finger_pinky(EncodedInput::Type::PINKY, PIN_PINKY);
 #else
   #if ENABLE_THUMB
-    SplayFinger finger_thumb(EncodedInput::Type::THUMB, PIN_THUMB, PIN_THUMB);
+    SplayFinger finger_thumb(EncodedInput::Type::THUMB, PIN_THUMB, PIN_THUMB_SPLAY);
   #endif
   SplayFinger finger_index(EncodedInput::Type::INDEX, PIN_INDEX, PIN_INDEX_SPLAY);
   SplayFinger finger_middle(EncodedInput::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY);
