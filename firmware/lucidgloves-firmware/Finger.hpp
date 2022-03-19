@@ -82,11 +82,19 @@ class Finger : public EncodedInput, public Calibrated {
 class SplayFinger : public Finger {
  public:
   SplayFinger(EncodedInput::Type enc_type, int pin, int splay_pin) :
-    Finger(enc_type, pin), splay_pin(splay_pin), splay_value(0) {}
+    Finger(enc_type, pin), splay_pin(splay_pin), splay_value(0),
+    splay_calibrator(0, ANALOG_MAX, CLAMP_ANALOG_MAP) {}
 
   void readInput() override {
     Finger::readInput();
-    splay_value = analogRead(splay_pin);
+    int new_splay_value = analogRead(splay_pin);
+    // Update the calibration
+    if (calibrate) {
+      splay_calibrator.update(new_splay_value);
+    }
+
+    // set the value to the calibrated value.
+    splay_value = splay_calibrator.calibrate(new_splay_value, 0, ANALOG_MAX);
   }
 
   inline int getEncodedSize() const override {
@@ -105,4 +113,5 @@ class SplayFinger : public Finger {
  protected:
   int splay_pin;
   int splay_value;
+  MinMaxCalibrator<int> splay_calibrator;
 };
