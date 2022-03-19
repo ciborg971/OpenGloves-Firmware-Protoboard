@@ -19,6 +19,12 @@ struct EncodedInput {
     CALIBRATE = 'O'
   };
 
+  static constexpr char* KnuckleFormat[4] = {
+    "(%cAA)",
+    "(%cAB)",
+    "(%cAC)",
+    "(%cAD)"
+  };
 
   // Setup any hardware needed for the input here.
   virtual void setupInput() {};

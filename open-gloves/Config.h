@@ -44,10 +44,11 @@
 #define JOYSTICK_DEADZONE 0.1 //deadzone in the joystick to prevent drift. Value out of 1.0.
 
 // Finger settings
-#define ENABLE_THUMB   true  // If for some reason you don't want to track the thumb
-#define ENABLE_SPLAY   false // Track the side to side motion of fingers
-#define INVERT_FLEXION false
-#define INVERT_SPLAY   false
+#define ENABLE_THUMB          true  // If for some reason you don't want to track the thumb
+#define ENABLE_SPLAY          false // Track the side to side motion of fingers
+#define INVERT_FLEXION        false
+#define INVERT_SPLAY          false
+#define FINGER_KNUCKLE_COUNT  1 // How many knuckles each finger has
 
 // Gesture enables, make false to use button override
 #define TRIGGER_GESTURE true
@@ -125,20 +126,44 @@
 #elif defined(ESP32)
   //(This configuration is for ESP32 DOIT V1 so make sure to change if you're on another board)
   // Analog Inputs
-  #define PIN_PINKY           DirectPin<36>()
-  #define PIN_RING            DirectPin<39>()
-  #define PIN_MIDDLE          DirectPin<34>()
-  #define PIN_INDEX           DirectPin<35>()
-  #define PIN_THUMB           DirectPin<32>()
-  #define PIN_JOY_X           DirectPin<33>()
-  #define PIN_JOY_Y           DirectPin<25>()
-  #define PIN_PINKY_SPLAY     DirectPin<1>()
-  #define PIN_RING_SPLAY      DirectPin<1>()
-  #define PIN_MIDDLE_SPLAY    DirectPin<1>()
-  #define PIN_INDEX_SPLAY     DirectPin<1>()
-  #define PIN_THUMB_SPLAY     DirectPin<1>()
-  #define MUX_INPUT_A         DirectPin<34>()
-  #define MUX_INPUT_B         DirectPin<35>()
+  #define PIN_THUMB        DirectPin<32>()
+  #define PIN_THUMB_SPLAY  MultiplexedPin<M0>()
+  #define PIN_THUMB_K0     MultiplexedPin<M1>()
+  #define PIN_THUMB_K1     MultiplexedPin<M2>()
+  #define PIN_THUMB_K2     MultiplexedPin<M3>()
+
+  #define PIN_INDEX        DirectPin<35>()
+  #define PIN_INDEX_SPLAY  MultiplexedPin<M4>()
+  #define PIN_INDEX_K0     MultiplexedPin<M5>()
+  #define PIN_INDEX_K1     MultiplexedPin<M6>()
+  #define PIN_INDEX_K2     MultiplexedPin<M7>()
+  #define PIN_INDEX_K3     MultiplexedPin<M8>()
+
+  #define PIN_MIDDLE       DirectPin<34>()
+  #define PIN_MIDDLE_SPLAY MultiplexedPin<M9>()
+  #define PIN_MIDDLE_K0    MultiplexedPin<M10>()
+  #define PIN_MIDDLE_K1    MultiplexedPin<M11>()
+  #define PIN_MIDDLE_K2    MultiplexedPin<M12>()
+  #define PIN_MIDDLE_K3    MultiplexedPin<M13>()
+
+  #define PIN_RING         DirectPin<39>()
+  #define PIN_RING_SPLAY   MultiplexedPin<M14>()
+  #define PIN_RING_K0      MultiplexedPin<M15>()
+  #define PIN_RING_K1      MultiplexedPin<M16>()
+  #define PIN_RING_K2      MultiplexedPin<M17>()
+  #define PIN_RING_K3      MultiplexedPin<M18>()
+
+  #define PIN_PINKY        DirectPin<36>()
+  #define PIN_PINKY_SPLAY  MultiplexedPin<M19>()
+  #define PIN_PINKY_K0     MultiplexedPin<M20>()
+  #define PIN_PINKY_K1     MultiplexedPin<M21>()
+  #define PIN_PINKY_K2     MultiplexedPin<M22>()
+  #define PIN_PINKY_K3     MultiplexedPin<M23>()
+
+  #define PIN_JOY_X        DirectPin<33>()
+  #define PIN_JOY_Y        DirectPin<25>()
+  #define MUX_INPUT_A      DirectPin<34>() // Must be a direct pin!
+  #define MUX_INPUT_B      DirectPin<35>() // Must be a direct pin!
   // Digital Inputs
   #define PIN_JOY_BTN         26
   #define PIN_A_BTN           27
