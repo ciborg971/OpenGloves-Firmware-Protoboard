@@ -7,10 +7,10 @@
 class Button : public EncodedInput {
  public:
   Button(EncodedInput::Type type, int pin, bool invert) :
-    type(type), pin(pin), on_state(invert ? LOW : HIGH), value(false) {}
+    type(type), pin(pin), on_state(invert ? HIGH : LOW), value(false) {}
 
   void setupInput() override {
-    pinMode(PIN_JOY_BTN, INPUT_PULLUP);
+    pinMode(pin, INPUT_PULLUP);
   }
 
   virtual void readInput() {
