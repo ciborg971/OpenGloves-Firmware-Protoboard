@@ -73,15 +73,18 @@
 #define FORCE_FEEDBACK_RELEASE 50 // To prevent hardware damage, value passed the limit for when to release FFB. (Set to FORCE_FEEDBACK_MAX to disable)
 
 // Counts of objects in the system used for looping
+// Inputs
 #define GESTURE_COUNT        (TRIGGER_GESTURE + GRAB_GESTURE + PINCH_GESTURE)
 #define FINGER_COUNT         (ENABLE_THUMB ? 5 : 4)
 #define JOYSTICK_COUNT       (ENABLE_JOYSTICK ? 2 : 0)
 #define BUTTON_COUNT         (4 + ENABLE_JOYSTICK + !TRIGGER_GESTURE + !GRAB_GESTURE + !PINCH_GESTURE)
-#define INPUT_COUNT          (BUTTON_COUNT+FINGER_COUNT+JOYSTICK_COUNT+GESTURE_COUNT)
+// Ouputs
 #define HAPTIC_COUNT         (ENABLE_HAPTICS ? 1 : 0)
 #define FORCE_FEEDBACK_COUNT (ENABLE_FORCE_FEEDBACK ? FINGER_COUNT : 0)
-#define CALIBRATED_COUNT     FINGER_COUNT
-#define OUTPUT_COUNT         (HAPTIC_COUNT + FORCE_FEEDBACK_COUNT)
+// Used for array allocations. These may need to be increased if more inputs are added.
+#define MAX_INPUT_COUNT      32
+#define MAX_CALIBRATED_COUNT 8
+#define MAX_OUTPUT_COUNT     8
 
 //PINS CONFIGURATION
 #if defined(__AVR__)
