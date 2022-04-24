@@ -52,3 +52,6 @@ https://github.com/LucidVR/opengloves-driver
 * [LucasVRTech](https://github.com/lucas-vrtech) of the LucidGlove project
 * [danwillim](https://github.com/danwillm) of OpenGlove project
 * [TwidgeVR](https://github.com/TwidgeVR) guides on how to make homemade flex sensors
+* [Vals](https://github.com/Valsvirtuals) of the ProtoGlove Project
+* [Crylog](https://github.com/ciborg971) Multiplexer support + RGB LEDS support
+* [AikoKiss](https://github.com/AikoKiss) Beta testing
