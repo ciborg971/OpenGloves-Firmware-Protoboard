@@ -119,7 +119,7 @@ void loop() {
     inputs[i]->readInput();
   }
 
-  // Encode all of the outputs to a single string.
+  // Encode all of the inputs to a single string.
   encodeAll(encoded_output_string, inputs, input_count);
 
   // Send the string to the communication handler.

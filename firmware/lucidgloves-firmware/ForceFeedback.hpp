@@ -10,13 +10,18 @@
 #endif
 
 #if SERVO_SMOOTH_STEPPING
-  #define SERVO_MIN MIN_PULSE_WIDTH
-  #define SERVO_MAX MAX_PULSE_WIDTH
+  #define SERVO_MIN !FORCE_FEEDBACK_INVERT ? MIN_PULSE_WIDTH : MAX_PULSE_WIDTH
+  #define SERVO_MAX !FORCE_FEEDBACK_INVERT ? MAX_PULSE_WIDTH : MIN_PULSE_WIDTH
   #define WRITE_FUNCTION(x) writeMicroseconds(x)
+  // We can use the built in map function since we are using integer math.
+  #define mapFunction map
 #else
-  #define SERVO_MIN 0.0
-  #define SERVO_MAX 180.0
+  #define SERVO_MIN !FORCE_FEEDBACK_INVERT ? 0.0 : 180.0
+  #define SERVO_MAX !FORCE_FEEDBACK_INVERT ? 180.0 : 0.0
   #define WRITE_FUNCTION(x) write(x)
+  float mapFunction(float x, float in_min, float in_max, float out_min, float out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
 #endif
 
 class ForceFeedback : public DecodedOuput {
@@ -40,7 +45,10 @@ class ForceFeedback : public DecodedOuput {
 // postion.
 class ServoForceFeedback : public ForceFeedback {
  public:
-  ServoForceFeedback(DecodedOuput::Type type, const Finger* finger, int servo_pin) : ForceFeedback(type, finger), servo_pin(servo_pin) {}
+  ServoForceFeedback(DecodedOuput::Type type,
+                     const Finger* finger,
+                     int servo_pin,
+                     bool invert) : ForceFeedback(type, finger), servo_pin(servo_pin), invert(invert) {}
 
   void setupOutput() override {
     // Initialize the servo and move it to the unrestricted base limit.
@@ -53,24 +61,25 @@ class ServoForceFeedback : public ForceFeedback {
   }
 
  protected:
-  int scale(int input) {
+  float scale(float input_limit) {
     #if FORCE_FEEDBACK_FINGER_SCALING
       // TODO: Does this actually scale correctly?
       // Map the Limit to the range of motion that the finger has been through.
-      int out = finger->mapOntoCalibratedRange(input, FORCE_FEEDBACK_MIN, FORCE_FEEDBACK_MAX);
+      int out = finger->mapOntoCalibratedRange(input_limit, FORCE_FEEDBACK_MIN, FORCE_FEEDBACK_MAX);
 
       // Map that range onto the servo's output range.
       out = map(out, 0, ANALOG_MAX, SERVO_MIN, SERVO_MAX);
+
+      // After mapping, make sure that we are still within the output range.
+      return constrain(out, SERVO_MIN, SERVO_MAX);
     #else
       // Use the entire range of motion.
-      int out = map(out, FORCE_FEEDBACK_MIN, FORCE_FEEDBACK_MAX, SERVO_MIN, SERVO_MAX);
+      return mapFunction(input_limit, FORCE_FEEDBACK_MIN, FORCE_FEEDBACK_MAX, SERVO_MIN, SERVO_MAX);
     #endif
-
-    // After mapping, make sure that we are still within the output range.
-    return constrain(out, SERVO_MIN, SERVO_MAX);
   }
 
   int servo_pin;
+  bool invert;
   Servo servo;
 };
 

@@ -68,9 +68,10 @@
 #define FORCE_FEEDBACK_SERVO_CLAMP_UNLOCK 0
 #define FORCE_FEEDBACK_SERVO_CLAMP_LOCK   20
 
-#define FORCE_FEEDBACK_MIN      0 // Value of 0 means no limit.
-#define FORCE_FEEDBACK_MAX   1000 // Value of 1000 means maximum limit.
-#define FORCE_FEEDBACK_RELEASE 50 // To prevent hardware damage, value passed the limit for when to release FFB. (Set to FORCE_FEEDBACK_MAX to disable)
+#define FORCE_FEEDBACK_INVERT    false // Flips the direction of the FFB.
+#define FORCE_FEEDBACK_MIN           0 // Value of 0 means no limit.
+#define FORCE_FEEDBACK_MAX        1000 // Value of 1000 means maximum limit.
+#define FORCE_FEEDBACK_RELEASE      50 // To prevent hardware damage, value passed the limit for when to release FFB. (Set to FORCE_FEEDBACK_MAX to disable)
 
 // Counts of objects in the system used for looping
 // Inputs
