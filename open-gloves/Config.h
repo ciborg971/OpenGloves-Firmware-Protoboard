@@ -44,11 +44,14 @@
 #define JOYSTICK_DEADZONE 0.1 //deadzone in the joystick to prevent drift. Value out of 1.0.
 
 // Finger settings
-#define ENABLE_THUMB          true  // If for some reason you don't want to track the thumb
-#define ENABLE_SPLAY          false // Track the side to side motion of fingers
-#define INVERT_CURL           false
-#define INVERT_SPLAY          false
-#define KNUCKLE_COUNT         1 // How many knuckles each finger has
+#define ENABLE_THUMB        true  // If for some reason you don't want to track the thumb
+#define ENABLE_SPLAY        true // Track the side to side motion of fingers
+#define INVERT_CURL         false
+#define INVERT_SPLAY        false
+#define KNUCKLE_COUNT       1 // How many knuckles each finger has
+#define CALIBRATION_CURL    MinMaxCalibrator<int, 0, ANALOG_MAX>
+#define SPLAY_SCALING_RATIO 9 //
+#define CALIBRATION_SPLAY   CenterPointScalingCalibrator<int> // See Calibration.hpp for more options
 
 // Gesture enables, make false to use button override
 #define TRIGGER_GESTURE true

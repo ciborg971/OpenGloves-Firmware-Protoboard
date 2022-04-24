@@ -25,7 +25,7 @@ class Finger : public EncodedInput, public Calibrated {
 // Declare unspecialized type, but don't define it so any unspecialized version won't compile (eg knuckle count 4).
 template<bool enable_splay, size_t knuckle_count,
          size_t knuckle_offset=EncodedInput::KnuckleFingerOffset,
-         typename CurlCalibrator=MinMaxCalibrator<int>, typename SplayCalibrator=MinMaxCalibrator<int>>
+         typename CurlCalibrator=CALIBRATION_CURL, typename SplayCalibrator=CALIBRATION_SPLAY>
 class ConfigurableFinger;
 
 /*
@@ -34,7 +34,7 @@ class ConfigurableFinger;
 template<size_t _, typename CurlCalibrator, typename SplayCalibrator>
 class ConfigurableFinger<false, 1, _, CurlCalibrator, SplayCalibrator> : public Finger {
  public:
-  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pin(k0), value(0), calibrator(0, ANALOG_MAX) {}
+  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pin(k0), value(0) {}
 
   void readInput() override {
     // Read the latest value.
@@ -93,8 +93,7 @@ class ConfigurableFinger<false, 1, _, CurlCalibrator, SplayCalibrator> : public 
 template<size_t knuckle_offset, typename CurlCalibrator, typename SplayCalibrator>
 class ConfigurableFinger<false, 2, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {
  public:
-  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pins{k0, k1},
-                                        values{0, 0, 0}, calibrators{{0, ANALOG_MAX}, {0, ANALOG_MAX}} {}
+  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pins{k0, k1}, values{0, 0, 0} {}
 
   void readInput() override {
     // Read from the two pins that we have.
@@ -172,8 +171,7 @@ class ConfigurableFinger<false, 2, knuckle_offset, CurlCalibrator, SplayCalibrat
 template<size_t knuckle_offset, typename CurlCalibrator, typename SplayCalibrator>
 class ConfigurableFinger<false, 3, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {
    public:
-  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pins{k0, k1, k2},
-                                        values{0, 0, 0}, calibrators{{0, ANALOG_MAX}, {0, ANALOG_MAX}, {0, ANALOG_MAX}} {}
+  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pins{k0, k1, k2}, values{0, 0, 0} {}
 
   void readInput() override {
     // Read from the three pins that we have.
@@ -247,7 +245,7 @@ template<typename SplayCalibrator, typename BaseFinger>
 class SplaySupport : public BaseFinger {
  public:
   SplaySupport(ConstructorArgs) : BaseFinger(all_args),
-  splay_pin(splay), splay_value(0), splay_calibrator(0, ANALOG_MAX) {}
+  splay_pin(splay), splay_value(0) {}
 
   void readInput() override {
     BaseFinger::readInput();
