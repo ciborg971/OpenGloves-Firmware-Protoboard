@@ -49,20 +49,20 @@ Button* buttons[BUTTON_COUNT] = {
 
 #if !ENABLE_SPLAY
   #if ENABLE_THUMB
-    Finger finger_thumb(EncodedInput::Type::THUMB, PIN_THUMB);
+    Finger finger_thumb(EncodedInput::Type::THUMB, new PIN_THUMB);
   #endif
-  Finger finger_index(EncodedInput::Type::INDEX, PIN_INDEX);
-  Finger finger_middle(EncodedInput::Type::MIDDLE, PIN_MIDDLE);
-  Finger finger_ring(EncodedInput::Type::RING, PIN_RING);
-  Finger finger_pinky(EncodedInput::Type::PINKY, PIN_PINKY);
+  Finger finger_index(EncodedInput::Type::INDEX, new PIN_INDEX);
+  Finger finger_middle(EncodedInput::Type::MIDDLE, new PIN_MIDDLE);
+  Finger finger_ring(EncodedInput::Type::RING, new PIN_RING);
+  Finger finger_pinky(EncodedInput::Type::PINKY, new PIN_PINKY);
 #else
   #if ENABLE_THUMB
-    SplayFinger finger_thumb(EncodedInput::Type::THUMB, PIN_THUMB, PIN_THUMB_SPLAY);
+    SplayFinger finger_thumb(EncodedInput::Type::THUMB, new PIN_THUMB, new PIN_THUMB_SPLAY);
   #endif
-  SplayFinger finger_index(EncodedInput::Type::INDEX, PIN_INDEX, PIN_INDEX_SPLAY);
-  SplayFinger finger_middle(EncodedInput::Type::MIDDLE, PIN_MIDDLE, PIN_MIDDLE_SPLAY);
-  SplayFinger finger_ring(EncodedInput::Type::RING, PIN_RING, PIN_RING_SPLAY);
-  SplayFinger finger_pinky(EncodedInput::Type::PINKY, PIN_PINKY, PIN_PINKY_SPLAY);
+  SplayFinger finger_index(EncodedInput::Type::INDEX, new PIN_INDEX, new PIN_INDEX_SPLAY);
+  SplayFinger finger_middle(EncodedInput::Type::MIDDLE, new PIN_MIDDLE, new PIN_MIDDLE_SPLAY);
+  SplayFinger finger_ring(EncodedInput::Type::RING, new PIN_RING, new PIN_RING_SPLAY);
+  SplayFinger finger_pinky(EncodedInput::Type::PINKY, new PIN_PINKY, new PIN_PINKY_SPLAY);
 #endif
 
 Finger* fingers[FINGER_COUNT] = {
@@ -74,8 +74,8 @@ Finger* fingers[FINGER_COUNT] = {
 
 JoyStickAxis* joysticks[JOYSTICK_COUNT] = {
   #if ENABLE_JOYSTICK
-    new JoyStickAxis(EncodedInput::Type::JOY_X, PIN_JOY_X, JOYSTICK_DEADZONE, INVERT_JOY_X),
-    new JoyStickAxis(EncodedInput::Type::JOY_Y, PIN_JOY_Y, JOYSTICK_DEADZONE, INVERT_JOY_Y)
+    new JoyStickAxis(EncodedInput::Type::JOY_X, new PIN_JOY_X, JOYSTICK_DEADZONE, INVERT_JOY_X),
+    new JoyStickAxis(EncodedInput::Type::JOY_Y, new PIN_JOY_Y, JOYSTICK_DEADZONE, INVERT_JOY_Y)
   #endif
 };
 

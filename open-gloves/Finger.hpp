@@ -4,6 +4,7 @@
 
 #include "Calibration.hpp"
 #include "DriverProtocol.hpp"
+#include "Pin.hpp"
 
 #if ENABLE_MEDIAN_FILTER
   #include <RunningMedian.h>
@@ -11,13 +12,13 @@
 
 class Finger : public EncodedInput, public Calibrated {
  public:
-  Finger(EncodedInput::Type enc_type, int pin) :
+  Finger(EncodedInput::Type enc_type, AnalogPin* pin) :
     type(enc_type), pin(pin), value(0),
     median(MEDIAN_SAMPLES), calibrator(0, ANALOG_MAX, CLAMP_ANALOG_MAP) {}
 
   void readInput() override {
     // Read the latest value.
-    int new_value = analogRead(pin);
+    int new_value = pin->read();
 
     // Apply configured modifiers.
     #if INVERT_FLEXION
@@ -67,7 +68,7 @@ class Finger : public EncodedInput, public Calibrated {
 
  protected:
   EncodedInput::Type type;
-  int pin;
+  AnalogPin* pin;
   int value;
 
   #if ENABLE_MEDIAN_FILTER
@@ -81,13 +82,13 @@ class Finger : public EncodedInput, public Calibrated {
 
 class SplayFinger : public Finger {
  public:
-  SplayFinger(EncodedInput::Type enc_type, int pin, int splay_pin) :
+  SplayFinger(EncodedInput::Type enc_type, AnalogPin* pin, AnalogPin* splay_pin) :
     Finger(enc_type, pin), splay_pin(splay_pin), splay_value(0),
     splay_calibrator(0, ANALOG_MAX, CLAMP_ANALOG_MAP) {}
 
   void readInput() override {
     Finger::readInput();
-    int new_splay_value = analogRead(splay_pin);
+    int new_splay_value = splay_pin->read();
     // Update the calibration
     if (calibrate) {
       splay_calibrator.update(new_splay_value);
@@ -111,7 +112,7 @@ class SplayFinger : public Finger {
   }
 
  protected:
-  int splay_pin;
+  AnalogPin* splay_pin;
   int splay_value;
   MinMaxCalibrator<int> splay_calibrator;
 };

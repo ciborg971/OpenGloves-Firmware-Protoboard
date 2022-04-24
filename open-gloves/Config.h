@@ -139,7 +139,7 @@
   #define PIN_THUMB_SPLAY     DirectPin<1>()
   #define MUX_INPUT_A         DirectPin<34>()
   #define MUX_INPUT_B         DirectPin<35>()
-  // Digital Imputs
+  // Digital Inputs
   #define PIN_JOY_BTN         26
   #define PIN_A_BTN           27
   #define PIN_B_BTN           14
