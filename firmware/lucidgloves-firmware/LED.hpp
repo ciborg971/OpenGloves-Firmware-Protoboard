@@ -1,6 +1,6 @@
 #pragma once
 
-class LED {
+class StatusLED {
  public:
   enum State : int {
     OFF,
@@ -11,7 +11,7 @@ class LED {
     BLINK_QUAD // Blink four times then rest
   };
 
-  LED(int pin) : pin(pin), state(LOW), last_update(0){}
+  StatusLED(int pin) : pin(pin), state(LOW), last_update(0){}
 
   void setup() {
     pinMode(pin, OUTPUT);

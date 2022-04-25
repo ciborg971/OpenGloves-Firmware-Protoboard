@@ -76,7 +76,7 @@ void setup() {
     outputs[i]->setupOutput();
   }
 
-  // Setup the LED.
+  // Setup the StatusLED.
   led.setup();
 
   if (ALWAYS_CALIBRATING) {
@@ -89,10 +89,10 @@ void setup() {
 void loop() {
   if (!comm->isOpen()){
     // Connection to Driver not ready, blink the LED to indicate no connection.
-    led.setState(LED::State::BLINK_STEADY);
+    led.setState(StatusLED::State::BLINK_STEADY);
   } else {
     // All is good, LED on to indicate a good connection.
-    led.setState(LED::State::ON);
+    led.setState(StatusLED::State::ON);
   }
 
   // Notify the calibrators to turn on.

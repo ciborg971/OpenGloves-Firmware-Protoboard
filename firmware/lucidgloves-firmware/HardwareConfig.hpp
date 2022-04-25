@@ -11,7 +11,7 @@
 #include "JoyStick.hpp"
 #include "LED.hpp"
 
-LED led(PIN_LED);
+StatusLED led(PIN_LED);
 
 // This button is referenced directly by the FW, so we need a pointer to it outside
 // the list of buttons.
