@@ -68,7 +68,7 @@ class ServoForceFeedback : public ForceFeedback {
       int out = finger->mapOntoCalibratedRange(input_limit, FORCE_FEEDBACK_MIN, FORCE_FEEDBACK_MAX);
 
       // Map that range onto the servo's output range.
-      out = map(out, 0, ANALOG_MAX, SERVO_MIN, SERVO_MAX);
+      out = mapFunction(out, 0, ANALOG_MAX, SERVO_MIN, SERVO_MAX);
 
       // After mapping, make sure that we are still within the output range.
       return constrain(out, SERVO_MIN, SERVO_MAX);
