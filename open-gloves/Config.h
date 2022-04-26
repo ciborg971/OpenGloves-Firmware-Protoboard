@@ -2,6 +2,7 @@
  * LucidGloves Firmware Version 5
  * Author: Lucas_VRTech - LucidVR
  *         John Thomas  - Exia
+ *         MinyStreem
  * lucidvrtech.com
  * github.com/JohnRThomas/FlexiaGloves/
  */
@@ -11,10 +12,15 @@
 // Which communication protocol to use
 #define COMM_SERIAL 0
 #define COMM_BTSERIAL 1
+#define COMM_WIFISERIAL 2
 #define COMMUNICATION COMM_SERIAL
+
 #define ENABLE_SYNCHRONOUS_COMM true // Experimental: If enable, doesn't wait for FFB data before sending new input data.
 #define SERIAL_BAUD_RATE 115200
 #define BTSERIAL_DEVICE_NAME "OpenGlove-Left"
+#define WIFI_SERIAL_SSID     "WIFI SSID here"
+#define WIFI_SERIAL_PASSWORD "password here"
+#define WIFI_SERIAL_PORT      80
 
 // Button Settings
 // If a button registers as pressed when not and vice versa (eg. using normally-closed switches),

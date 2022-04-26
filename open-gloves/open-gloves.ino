@@ -7,6 +7,8 @@
   #include "SerialCommunication.hpp"
 #elif COMMUNICATION == COMM_BTSERIAL
   #include "SerialBTCommunication.hpp"
+#elif COMMUNICATION == COMM_WIFISERIAL
+  #include "SerialWIFICommunication.hpp"
 #endif
 
 #define ALWAYS_CALIBRATING CALIBRATION_LOOPS == -1
@@ -37,6 +39,8 @@ void setup() {
     comm = new SerialCommunication();
   #elif COMMUNICATION == COMM_BTSERIAL
     comm = new BTSerialCommunication();
+  #elif COMMUNICATION == COMM_WIFISERIAL
+    comm = new WIFISerialCommunication();
   #endif
 
   comm->start();
