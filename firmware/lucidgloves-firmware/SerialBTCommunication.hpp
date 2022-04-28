@@ -18,7 +18,8 @@ class BTSerialCommunication : public ICommunication {
     }
 
     void start(){
-      Serial.begin(115200);
+      Serial.begin(SERIAL_BAUD_RATE);
+      m_SerialBT.setTimeout(0);
       m_SerialBT.begin(BTSERIAL_DEVICE_NAME);
       Serial.println("The device started, now you can pair it with bluetooth!");
       m_isOpen = true;
