@@ -1,4 +1,4 @@
-# OpenGlove Firmware
+# OpenGloves Firmware
 This is a firmware implementation meant to work with the Steam VR Driver OpenGloves. It is meant to support many different types of hardware and can be configured to work with specific implementations.
 
 # Firmware
