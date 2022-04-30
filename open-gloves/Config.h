@@ -17,7 +17,7 @@
 #define SERIAL_BAUD_RATE 115200
 
 // Serial over Bluetooth
-#define BTSERIAL_DEVICE_NAME "lucidgloves-left"
+#define BTSERIAL_DEVICE_NAME "OpenGlove-Left"
 
 // Button Settings
 // If a button registers as pressed when not and vice versa (eg. using normally-closed switches),
