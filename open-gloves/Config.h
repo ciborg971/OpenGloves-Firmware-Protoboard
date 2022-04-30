@@ -80,9 +80,9 @@
 #define HAPTIC_COUNT         (ENABLE_HAPTICS ? 1 : 0)
 #define FORCE_FEEDBACK_COUNT (ENABLE_FORCE_FEEDBACK ? FINGER_COUNT : 0)
 // Used for array allocations. These may need to be increased if more inputs are added.
-#define MAX_INPUT_COUNT      32
-#define MAX_CALIBRATED_COUNT 8
-#define MAX_OUTPUT_COUNT     8
+#define MAX_INPUT_COUNT      (BUTTON_COUNT+FINGER_COUNT+JOYSTICK_COUNT+GESTURE_COUNT)
+#define MAX_CALIBRATED_COUNT FINGER_COUNT
+#define MAX_OUTPUT_COUNT     (HAPTIC_COUNT + FORCE_FEEDBACK_COUNT)
 
 //PINS CONFIGURATION
 #if defined(__AVR__)
