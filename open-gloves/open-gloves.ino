@@ -126,7 +126,8 @@ void loop() {
   comm->output(encoded_output_string);
 
   char received_bytes[100];
-  if (comm->hasData() && comm->readData(received_bytes, 100)) {
+  if ((ENABLE_SYNCHRONOUS_COMM || comm->hasData()) &&
+      comm->readData(received_bytes, 100)) {
     for (size_t i = 0; i < output_count; i++) {
       // Decode the update and write it to the output.
       outputs[i]->decodeToOuput(received_bytes);

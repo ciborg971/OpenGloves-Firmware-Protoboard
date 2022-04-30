@@ -12,11 +12,8 @@
 #define COMM_SERIAL 0
 #define COMM_BTSERIAL 1
 #define COMMUNICATION COMM_SERIAL
-
-// Serial over USB
+#define ENABLE_SYNCHRONOUS_COMM true // Experimental: If enable, doesn't wait for FFB data before sending new input data.
 #define SERIAL_BAUD_RATE 115200
-
-// Serial over Bluetooth
 #define BTSERIAL_DEVICE_NAME "OpenGlove-Left"
 
 // Button Settings
