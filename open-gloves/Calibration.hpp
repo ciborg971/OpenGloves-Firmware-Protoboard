@@ -1,5 +1,9 @@
 #pragma once
 
+constexpr float accurateMap(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 class Calibrated {
  public:
   virtual void resetCalibration() = 0;
@@ -44,7 +48,7 @@ class MinMaxCalibrator {
     if (value_min > value_max) return (output_min + output_max) / 2.0f;
 
     // Map the input range to the output range.
-    T output = map(input, value_min, value_max, input_min, input_max);
+    T output = accurateMap(input, value_min, value_max, input_min, input_max);
     return clamp ? constrain(output, output_min, output_max) : output;
   }
 
