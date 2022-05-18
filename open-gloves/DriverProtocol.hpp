@@ -19,12 +19,17 @@ struct EncodedInput {
     CALIBRATE = 'O'
   };
 
+  static constexpr char* CurlFormat = "%c%d";
+  static constexpr size_t CurlSize = 6; // AXXXX + \0
+  static constexpr char* SplayFormat = "(%cB)%d";
+  static constexpr size_t SplaySize = 9; // (AB)XXXX + \0
   static constexpr char* KnuckleFormat[4] = {
-    "(%cAA)",
-    "(%cAB)",
-    "(%cAC)",
-    "(%cAD)"
+    "(%cAA)%d",
+    "(%cAB)%d",
+    "(%cAC)%d",
+    "(%cAD)%d"
   };
+  static constexpr size_t KnuckleSize = 10; // (AAA)XXXX + \0
 
   // Setup any hardware needed for the input here.
   virtual void setupInput() {};

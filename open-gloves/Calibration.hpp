@@ -23,12 +23,11 @@ class Calibrated {
 template<typename T>
 class MinMaxCalibrator {
  public:
-  MinMaxCalibrator(T output_min_,T output_max_, bool clamp_) :
+  MinMaxCalibrator(T output_min_, T output_max_) :
     output_min(output_min_),
     output_max(output_max_),
     value_min(output_max_),
-    value_max(output_min_),
-    clamp(clamp_) {}
+    value_max(output_min_) {}
 
   void reset() {
     value_min = output_max;
@@ -49,7 +48,9 @@ class MinMaxCalibrator {
 
     // Map the input range to the output range.
     T output = accurateMap(input, value_min, value_max, input_min, input_max);
-    return clamp ? constrain(output, output_min, output_max) : output;
+
+    // Lock the range to the output.
+    return constrain(output, output_min, output_max);
   }
 
 private:
@@ -57,5 +58,4 @@ private:
  T output_max;
  T value_min;
  T value_max;
- bool clamp;
 };

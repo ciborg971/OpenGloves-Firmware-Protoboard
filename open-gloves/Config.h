@@ -7,7 +7,7 @@
  *         John Thomas  - Exia
  *         MinyStreem
  * lucidvrtech.com
- * github.com/JohnRThomas/opengloves-firmware/
+ * github.com/JohnRThomas/OpenGloves-Firmware/
  */
 
 // Which communication protocol to use
@@ -46,9 +46,9 @@
 // Finger settings
 #define ENABLE_THUMB          true  // If for some reason you don't want to track the thumb
 #define ENABLE_SPLAY          false // Track the side to side motion of fingers
-#define INVERT_FLEXION        false
+#define INVERT_CURL           false
 #define INVERT_SPLAY          false
-#define FINGER_KNUCKLE_COUNT  1 // How many knuckles each finger has
+#define KNUCKLE_COUNT         1 // How many knuckles each finger has
 
 // Gesture enables, make false to use button override
 #define TRIGGER_GESTURE true
@@ -126,39 +126,30 @@
 #elif defined(ESP32)
   //(This configuration is for ESP32 DOIT V1 so make sure to change if you're on another board)
   // Analog Inputs
-  #define PIN_THUMB        DirectPin<32>()
-  #define PIN_THUMB_SPLAY  MultiplexedPin<M0>()
-  #define PIN_THUMB_K0     MultiplexedPin<M1>()
-  #define PIN_THUMB_K1     MultiplexedPin<M2>()
-  #define PIN_THUMB_K2     MultiplexedPin<M3>()
+  #define PIN_THUMB_K0     DirectPin<32>()  // First knuckle or whole finger if only one pot is attatched
+  #define PIN_THUMB_K1     MultiplexedPin<M0>()
+  #define PIN_THUMB_K2     MultiplexedPin<M1>()
+  #define PIN_THUMB_SPLAY  MultiplexedPin<M2>()
 
-  #define PIN_INDEX        DirectPin<35>()
-  #define PIN_INDEX_SPLAY  MultiplexedPin<M4>()
-  #define PIN_INDEX_K0     MultiplexedPin<M5>()
-  #define PIN_INDEX_K1     MultiplexedPin<M6>()
-  #define PIN_INDEX_K2     MultiplexedPin<M7>()
-  #define PIN_INDEX_K3     MultiplexedPin<M8>()
+  #define PIN_INDEX_K0     DirectPin<35>()  // First knuckle or whole finger if only one pot is attatched
+  #define PIN_INDEX_K1     MultiplexedPin<M3>()
+  #define PIN_INDEX_K2     MultiplexedPin<M4>()
+  #define PIN_INDEX_SPLAY  MultiplexedPin<M5>()
 
-  #define PIN_MIDDLE       DirectPin<34>()
-  #define PIN_MIDDLE_SPLAY MultiplexedPin<M9>()
-  #define PIN_MIDDLE_K0    MultiplexedPin<M10>()
-  #define PIN_MIDDLE_K1    MultiplexedPin<M11>()
-  #define PIN_MIDDLE_K2    MultiplexedPin<M12>()
-  #define PIN_MIDDLE_K3    MultiplexedPin<M13>()
+  #define PIN_MIDDLE_K0    DirectPin<34>()  // First knuckle or whole finger if only one pot is attatched
+  #define PIN_MIDDLE_K1    MultiplexedPin<M6>()
+  #define PIN_MIDDLE_K2    MultiplexedPin<M7>()
+  #define PIN_MIDDLE_SPLAY MultiplexedPin<M8>()
 
-  #define PIN_RING         DirectPin<39>()
-  #define PIN_RING_SPLAY   MultiplexedPin<M14>()
-  #define PIN_RING_K0      MultiplexedPin<M15>()
-  #define PIN_RING_K1      MultiplexedPin<M16>()
-  #define PIN_RING_K2      MultiplexedPin<M17>()
-  #define PIN_RING_K3      MultiplexedPin<M18>()
+  #define PIN_RING_K0      DirectPin<39>()  // First knuckle or whole finger if only one pot is attatched
+  #define PIN_RING_K1      MultiplexedPin<M9>()
+  #define PIN_RING_K2      MultiplexedPin<M10>()
+  #define PIN_RING_SPLAY   MultiplexedPin<M11>()
 
-  #define PIN_PINKY        DirectPin<36>()
-  #define PIN_PINKY_SPLAY  MultiplexedPin<M19>()
-  #define PIN_PINKY_K0     MultiplexedPin<M20>()
-  #define PIN_PINKY_K1     MultiplexedPin<M21>()
-  #define PIN_PINKY_K2     MultiplexedPin<M22>()
-  #define PIN_PINKY_K3     MultiplexedPin<M23>()
+  #define PIN_PINKY_K0     DirectPin<36>()  // First knuckle or whole finger if only one pot is attatched
+  #define PIN_PINKY_K1     MultiplexedPin<M12>()
+  #define PIN_PINKY_K2     MultiplexedPin<M13>()
+  #define PIN_PINKY_SPLAY  MultiplexedPin<M14>()
 
   #define PIN_JOY_X        DirectPin<33>()
   #define PIN_JOY_Y        DirectPin<25>()
@@ -203,16 +194,8 @@
 //#define ANALOG_MAX 4095
 #endif
 
-//Filtering and clamping analog inputs
-#define CLAMP_ANALOG_MAP true //clamp the mapped analog values from 0 to ANALOG_MAX
-
-// Enable and set min and max to match your sensor's expected raw value range
-// This discards any spurious values outside of the useful range
-#define CLAMP_FLEXION false       // Clamp the raw flexion values
-#define CLAMP_MIN     0           // Minimum value from the flexion sensors
-#define CLAMP_MAX     ANALOG_MAX  // Maximum value from the flexion sensors
-
 // You must install RunningMedian library to use this feature
 // https://www.arduino.cc/reference/en/libraries/runningmedian/
+// TODO: Allow calibration/filtering to be configurable here.
 #define ENABLE_MEDIAN_FILTER false //use the median of the previous values, helps reduce noise
 #define MEDIAN_SAMPLES 20

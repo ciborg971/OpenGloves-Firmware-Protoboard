@@ -3,12 +3,12 @@
 #include "Config.h"
 
 struct AnalogPin {
-  virtual inline int read() = 0;
+  virtual inline int read() const = 0;
 };
 
 template<int PIN>
 struct DirectPin : public AnalogPin {
-  inline int read() override {
+  inline int read() const override {
     return analogRead(PIN);
   }
 
@@ -55,7 +55,7 @@ enum Mask {
 template<Mask PIN_MASK>
 struct MultiplexedPin : public AnalogPin {
 
-  inline int read() override {
+  inline int read() const override {
     digitalWrite(MUX_SEL_0, PIN_MASK & 0b01000);
     digitalWrite(MUX_SEL_1, PIN_MASK & 0b00100);
     digitalWrite(MUX_SEL_2, PIN_MASK & 0b00010);
