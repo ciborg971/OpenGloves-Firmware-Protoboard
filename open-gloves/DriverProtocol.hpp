@@ -23,12 +23,22 @@ struct EncodedInput {
   static constexpr size_t CurlSize = 6; // AXXXX + \0
   static constexpr char* SplayFormat = "(%cB)%d";
   static constexpr size_t SplaySize = 9; // (AB)XXXX + \0
-  static constexpr char* KnuckleFormat[4] = {
-    "(%cAA)%d",
-    "(%cAB)%d",
-    "(%cAC)%d",
-    "(%cAD)%d"
-  };
+  // If Arduino gets c++17 support in the future, use this:
+  // static inline constexpr char* KnuckleFormat[4] = {
+  //   "(%cAA)%d",
+  //   "(%cAB)%d",
+  //   "(%cAC)%d",
+  //   "(%cAD)%d"
+  // };
+  static const char* knuckleFormat(size_t i) {
+    switch(i) {
+      case 0: return "(%cAA)%d";
+      case 1: return "(%cAB)%d";
+      case 2: return "(%cAC)%d";
+      case 3: return "(%cAD)%d";
+      default: return "";
+    }
+  }
   static constexpr size_t KnuckleSize = 10; // (AAA)XXXX + \0
   static constexpr size_t KnuckleFingerOffset = 1;
   static constexpr size_t KnuckleThumbOffset = 0;

@@ -41,7 +41,7 @@ class ConfigurableFinger<false, 1, _, CurlCalibrator, SplayCalibrator> : public 
     int new_value = pin->read();
 
     // Apply configured modifiers.
-    if(invert_curl) {
+    if (invert_curl) {
       new_value = ANALOG_MAX - new_value;
     }
 
@@ -50,7 +50,7 @@ class ConfigurableFinger<false, 1, _, CurlCalibrator, SplayCalibrator> : public 
       calibrator.update(new_value);
     }
 
-    // set the value to the calibrated value.
+    // Set the value to the calibrated value.
     value = calibrator.calibrate(new_value, 0, ANALOG_MAX);
   }
 
@@ -91,18 +91,157 @@ class ConfigurableFinger<false, 1, _, CurlCalibrator, SplayCalibrator> : public 
  * ConfigurableFinger: 2 knuckles, no splay
  */
 template<size_t knuckle_offset, typename CurlCalibrator, typename SplayCalibrator>
-class ConfigurableFinger<false, 2, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {};
+class ConfigurableFinger<false, 2, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {
+ public:
+  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pins{k0, k1},
+                                        values{0, 0, 0}, calibrators{{0, ANALOG_MAX}, {0, ANALOG_MAX}} {}
+
+  void readInput() override {
+    // Read from the two pins that we have.
+    for (size_t i = 0; i < 2; i++) {
+      // Read the latest value.
+      int new_value = pins[i]->read();
+
+      // Apply configured modifiers.
+      if (invert_curl) {
+        new_value = ANALOG_MAX - new_value;
+      }
+
+      // Update the calibration
+      if (calibrate) {
+        calibrators[i].update(new_value);
+      }
+
+      // Set the value to the calibrated value.
+      values[i] = calibrators[i].calibrate(new_value, 0, ANALOG_MAX);
+    }
+
+    // The third knuckle is based on the second knuckle.
+    // The third knuckle starts moving when the second knuckle is about 10% through it's travel.
+    // The third knuckle stops moving when the seccond knuckle is about 50% through it's travel.
+    constexpr int min = ANALOG_MAX * 0.1f;
+    constexpr int max = ANALOG_MAX * 0.5f;
+    values[2] = accurateMap(constrain(values[1], min, max), min, max, 0, ANALOG_MAX);
+  }
+
+  inline int getEncodedSize() const override {
+    return EncodedInput::KnuckleSize + EncodedInput::KnuckleSize + EncodedInput::KnuckleSize - 2;
+  }
+
+  int encode(char* output) const override {
+    int offset = 0;
+    for (size_t i = 0; i < 3; i++) {
+      offset += snprintf(output + offset, EncodedInput::KnuckleSize, EncodedInput::knuckleFormat(i + knuckle_offset), this->type, values[i]);
+    }
+    return offset;
+  }
+
+  void resetCalibration() override {
+    for (size_t i = 0; i < 2; i++) {
+      calibrators[i].reset();
+    }
+  }
+
+  int curlValue() const override {
+    // Take the average of all knuckles
+    return (values[0] + values[1] + values[2]) / 3.0f;
+  }
+
+  int splayValue() const override {
+    // This finger type doesn't have splay so just return the center for anyone that asks.
+    return ANALOG_MAX / 2;
+  }
+
+  // Allow others access to the finger's calibrator so they can
+  // map other values on this range.
+  int mapOntoCalibratedRange(int input, int min, int max) const {
+    // TODO: figure out how to make this work.
+    return 0;
+    //return calibrator.calibrate(input, min, max);
+  }
+
+ protected:
+  AnalogPin* pins[2];
+  int values[3];
+  CurlCalibrator calibrators[2];
+};
 
 /*
  * ConfigurableFinger: 3 knuckle, no splay
  */
 template<size_t knuckle_offset, typename CurlCalibrator, typename SplayCalibrator>
-class ConfigurableFinger<false, 3, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {};
+class ConfigurableFinger<false, 3, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {
+   public:
+  ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pins{k0, k1, k2},
+                                        values{0, 0, 0}, calibrators{{0, ANALOG_MAX}, {0, ANALOG_MAX}, {0, ANALOG_MAX}} {}
+
+  void readInput() override {
+    // Read from the three pins that we have.
+    for (size_t i = 0; i < 3; i++) {
+      // Read the latest value.
+      int new_value = pins[i]->read();
+
+      // Apply configured modifiers.
+      if (invert_curl) {
+        new_value = ANALOG_MAX - new_value;
+      }
+
+      // Update the calibration
+      if (calibrate) {
+        calibrators[i].update(new_value);
+      }
+
+      // set the value to the calibrated value.
+      values[i] = calibrators[i].calibrate(new_value, 0, ANALOG_MAX);
+    }
+  }
+
+  inline int getEncodedSize() const override {
+    return EncodedInput::KnuckleSize + EncodedInput::KnuckleSize + EncodedInput::KnuckleSize - 2;
+  }
+
+  int encode(char* output) const override {
+    int offset = 0;
+    for (size_t i = 0; i < 3; i++) {
+      offset += snprintf(output + offset, EncodedInput::KnuckleSize, EncodedInput::knuckleFormat(i + knuckle_offset), this->type, values[i]);
+    }
+    return offset;
+  }
+
+  void resetCalibration() override {
+    for (size_t i = 0; i < 3; i++) {
+      calibrators[i].reset();
+    }
+  }
+
+  int curlValue() const override {
+    // Take the average of all knuckles
+    return (values[0] + values[1] + values[2]) / 3.0f;
+  }
+
+  int splayValue() const override {
+    // This finger type doesn't have splay so just return the center for anyone that asks.
+    return ANALOG_MAX / 2;
+  }
+
+  // Allow others access to the finger's calibrator so they can
+  // map other values on this range.
+  int mapOntoCalibratedRange(int input, int min, int max) const {
+    // TODO: figure out how to make this work.
+    return 0;
+    //return calibrator.calibrate(input, min, max);
+  }
+
+ protected:
+  AnalogPin* pins[3];
+  int values[3];
+  CurlCalibrator calibrators[3];
+};
 
 /*
  * SplaySupport: adds splay to any Finger type.
  * If you are adding a custom finger, see the partially specialized class that adds splay support
- * to all ConfigurableFingers.
+ * to all ConfigurableFingers and use that as an example.
  */
 template<typename SplayCalibrator, typename BaseFinger>
 class SplaySupport : public BaseFinger {
@@ -132,8 +271,8 @@ class SplaySupport : public BaseFinger {
 
   int encode(char* output) const override {
     int offset = BaseFinger::encode(output);
-    int size = offset + snprintf(output + offset, EncodedInput::SplaySize, EncodedInput::SplayFormat, this->type, splay_value);
-    return size;
+    offset += snprintf(output + offset, EncodedInput::SplaySize, EncodedInput::SplayFormat, this->type, splay_value);
+    return offset;
   }
 
   void resetCalibration() override {
@@ -158,5 +297,7 @@ template<size_t knuckle_count, size_t knuckle_offset, typename CurlCalibrator, t
 class ConfigurableFinger<true, knuckle_count, knuckle_offset, CurlCalibrator, SplayCalibrator> :
   public SplaySupport<SplayCalibrator, ConfigurableFinger<false, knuckle_count, knuckle_offset, CurlCalibrator, SplayCalibrator>> {
  public:
-  ConfigurableFinger(ConstructorArgs) : SplaySupport<SplayCalibrator, ConfigurableFinger<false, knuckle_count, knuckle_offset, CurlCalibrator, SplayCalibrator>>(all_args) {}
+  ConfigurableFinger(ConstructorArgs) : SplaySupport<SplayCalibrator,
+                                        ConfigurableFinger<false, knuckle_count, knuckle_offset,
+                                                           CurlCalibrator, SplayCalibrator>>(all_args) {}
 };
