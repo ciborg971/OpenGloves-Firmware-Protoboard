@@ -4,9 +4,9 @@ This is a firmware implementation meant to work with the [Steam VR Driver OpenGl
 # Firmware
 Follow the instruction from LucidGloves, except use the firmware files in this repository.
 
-Open the firmware files located in the firmware/lucidgloves-firmware folder.
-By default the firmware is configured for an arduino nano using serial.
-To configure the firmware, change the defines in the lucidgloves-firmware.ino file.
+Open the firmware files located in the open-gloves folder.
+By default the firmware is configured for an arduino ESP32 using serial.
+To configure the firmware, change the defines in the Config.h file.
 
 **Configuration instructions are here: [Configuration Instructions](https://github.com/LucidVR/lucidgloves/wiki/Firmware-Setup-and-Customization-Tutorial/).**
 
@@ -32,3 +32,4 @@ https://github.com/LucidVR/opengloves-driver
 * [Vals](https://github.com/Valsvirtuals) of the ProtoGlove Project
 * [Crylog](https://github.com/ciborg971) Multiplexer support + RGB LEDS support
 * [AikoKiss](https://github.com/AikoKiss) Beta testing
+* [MinyStreem](https://github.com/MinyStreem) Wifi Support
