@@ -62,7 +62,6 @@ Finger* fingers[FINGER_COUNT] = {
   &finger_index, &finger_middle, &finger_ring, &finger_pinky
 };
 
-
 JoyStickAxis* joysticks[JOYSTICK_COUNT] = {
   #if ENABLE_JOYSTICK
     new JoyStickAxis(EncodedInput::Type::JOY_X, PIN_JOY_X, JOYSTICK_DEADZONE, INVERT_JOY_X),

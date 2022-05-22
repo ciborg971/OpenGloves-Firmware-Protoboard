@@ -1,26 +1,28 @@
 /*
- * LucidGloves Firmware Version 5
- * Author: Lucas_VRTech - LucidVR
+ * OpenGloves Firmware Configuration
+ *
+ *  This is the main configuration file. Tweak settings here to fit your hardware.
+ *
+ * Authors: Lucas_VRTech - LucidVR
  *         John Thomas  - Exia
  *         MinyStreem
  * lucidvrtech.com
- * github.com/JohnRThomas/FlexiaGloves/
+ * github.com/JohnRThomas/opengloves-firmware/
  */
 
-// This is the main configuration file. Tweak settings here to fit your hardware.
-
 // Which communication protocol to use
-#define COMM_SERIAL 0
-#define COMM_BTSERIAL 1
-#define COMM_WIFISERIAL 2
-#define COMMUNICATION COMM_SERIAL
+#define COMM_SERIAL     0
+#define COMM_BLUETOOTH  1
+#define COMM_WIFI       2
+#define COMMUNICATION   COMM_SERIAL
 
-#define ENABLE_SYNCHRONOUS_COMM true // Experimental: If enable, doesn't wait for FFB data before sending new input data.
-#define SERIAL_BAUD_RATE 115200
-#define BTSERIAL_DEVICE_NAME "OpenGlove-Left"
-#define WIFI_SERIAL_SSID     "WIFI SSID here"
-#define WIFI_SERIAL_PASSWORD "password here"
-#define WIFI_SERIAL_PORT      80
+// COMM settings
+#define ENABLE_SYNCHRONOUS_COMM true // Experimental: If enabled, doesn't wait for FFB data before sending new input data.
+#define SERIAL_BAUD_RATE        115200
+#define BT_SERIAL_DEVICE_NAME   "OpenGlove-Left"
+#define WIFI_SERIAL_SSID        "WIFI SSID here"
+#define WIFI_SERIAL_PASSWORD    "password here"
+#define WIFI_SERIAL_PORT        80
 
 // Button Settings
 // If a button registers as pressed when not and vice versa (eg. using normally-closed switches),
@@ -36,9 +38,9 @@
 #define INVERT_PINCH    false // Does nothing if gesture is enabled
 
 // Joystick configuration
-#define ENABLE_JOYSTICK  true // make false if not using the joystick
-#define INVERT_JOY_X     false
-#define INVERT_JOY_Y     false
+#define ENABLE_JOYSTICK   true // Set to false if not using the joystick
+#define INVERT_JOY_X      false
+#define INVERT_JOY_Y      false
 #define JOYSTICK_DEADZONE 0.1 //deadzone in the joystick to prevent drift. Value out of 1.0.
 
 // Finger settings
@@ -85,7 +87,7 @@
 // Ouputs
 #define HAPTIC_COUNT         (ENABLE_HAPTICS ? 1 : 0)
 #define FORCE_FEEDBACK_COUNT (ENABLE_FORCE_FEEDBACK ? FINGER_COUNT : 0)
-// Used for array allocations. These may need to be increased if more inputs are added.
+// Used for array allocations.
 #define MAX_INPUT_COUNT      (BUTTON_COUNT+FINGER_COUNT+JOYSTICK_COUNT+GESTURE_COUNT)
 #define MAX_CALIBRATED_COUNT FINGER_COUNT
 #define MAX_OUTPUT_COUNT     (HAPTIC_COUNT + FORCE_FEEDBACK_COUNT)

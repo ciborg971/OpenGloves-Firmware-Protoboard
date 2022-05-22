@@ -1,13 +1,12 @@
 #include "Config.h"
-
 #include "HardwareConfig.hpp"
-
 #include "ICommunication.hpp"
+
 #if COMMUNICATION == COMM_SERIAL
   #include "SerialCommunication.hpp"
-#elif COMMUNICATION == COMM_BTSERIAL
+#elif COMMUNICATION == COMM_BLUETOOTH
   #include "SerialBTCommunication.hpp"
-#elif COMMUNICATION == COMM_WIFISERIAL
+#elif COMMUNICATION == COMM_WIFI
   #include "SerialWIFICommunication.hpp"
 #endif
 
@@ -37,9 +36,9 @@ do {                                                       \
 void setup() {
   #if COMMUNICATION == COMM_SERIAL
     comm = new SerialCommunication();
-  #elif COMMUNICATION == COMM_BTSERIAL
+  #elif COMMUNICATION == COMM_BLUETOOTH
     comm = new BTSerialCommunication();
-  #elif COMMUNICATION == COMM_WIFISERIAL
+  #elif COMMUNICATION == COMM_WIFI
     comm = new WIFISerialCommunication();
   #endif
 

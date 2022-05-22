@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Config.h"
 #include "ICommunication.hpp"
 
 class SerialCommunication : public ICommunication {
