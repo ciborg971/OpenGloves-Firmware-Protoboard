@@ -50,12 +50,12 @@ Button* buttons[BUTTON_COUNT] = {
 #define FINGER_PARAMS(F) EncodedInput::Type::F, INVERT_CURL, INVERT_SPLAY, new PIN_##F##_K0, new PIN_##F##_K1, new PIN_##F##_K2, new PIN_##F##_SPLAY
 
 #if ENABLE_THUMB
-  ConfigurableFinger<KNUCKLE_COUNT, ENABLE_SPLAY> finger_thumb(FINGER_PARAMS(THUMB));
+  ConfigurableFinger<ENABLE_SPLAY, KNUCKLE_COUNT, EncodedInput::KnuckleThumbOffset> finger_thumb(FINGER_PARAMS(THUMB));
 #endif
-ConfigurableFinger<KNUCKLE_COUNT, ENABLE_SPLAY> finger_index(FINGER_PARAMS(INDEX));
-ConfigurableFinger<KNUCKLE_COUNT, ENABLE_SPLAY> finger_middle(FINGER_PARAMS(MIDDLE));
-ConfigurableFinger<KNUCKLE_COUNT, ENABLE_SPLAY> finger_ring(FINGER_PARAMS(RING));
-ConfigurableFinger<KNUCKLE_COUNT, ENABLE_SPLAY> finger_pinky(FINGER_PARAMS(PINKY));
+ConfigurableFinger<ENABLE_SPLAY, KNUCKLE_COUNT> finger_index(FINGER_PARAMS(INDEX));
+ConfigurableFinger<ENABLE_SPLAY, KNUCKLE_COUNT> finger_middle(FINGER_PARAMS(MIDDLE));
+ConfigurableFinger<ENABLE_SPLAY, KNUCKLE_COUNT> finger_ring(FINGER_PARAMS(RING));
+ConfigurableFinger<ENABLE_SPLAY, KNUCKLE_COUNT> finger_pinky(FINGER_PARAMS(PINKY));
 
 Finger* fingers[FINGER_COUNT] = {
   #if ENABLE_THUMB

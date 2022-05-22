@@ -22,13 +22,17 @@ class Finger : public EncodedInput, public Calibrated {
 #define ConstructorArgs EncodedInput::Type type, bool invert_curl, bool invert_splay, AnalogPin* k0,  AnalogPin* k1,  AnalogPin* k2,  AnalogPin* splay
 #define all_args type, invert_curl, invert_splay, k0, k1, k2, splay
 
-// Declare unspecialized type, but don't define it.
-template<size_t knuckle_count, bool enable_splay,
-         size_t first_knuckle_offset=1,
+// Declare unspecialized type, but don't define it so any unspecialized version won't compile (eg knuckle count 4).
+template<bool enable_splay, size_t knuckle_count,
+         size_t knuckle_offset=EncodedInput::KnuckleFingerOffset,
          typename CurlCalibrator=MinMaxCalibrator<int>, typename SplayCalibrator=MinMaxCalibrator<int>>
 class ConfigurableFinger;
 
-template<> class ConfigurableFinger<1, false> : public Finger {
+/*
+ * ConfigurableFinger: 1 knuckle, no splay
+ */
+template<size_t _, typename CurlCalibrator, typename SplayCalibrator>
+class ConfigurableFinger<false, 1, _, CurlCalibrator, SplayCalibrator> : public Finger {
  public:
   ConfigurableFinger(ConstructorArgs) : Finger(type, invert_curl, invert_splay), pin(k0), value(0), calibrator(0, ANALOG_MAX) {}
 
@@ -80,23 +84,41 @@ template<> class ConfigurableFinger<1, false> : public Finger {
  protected:
   AnalogPin* pin;
   int value;
-  MinMaxCalibrator<int> calibrator;
+  CurlCalibrator calibrator;
 };
 
-template<> class ConfigurableFinger<1, true /*enable_splay*/> : public ConfigurableFinger<1, false> {
+/*
+ * ConfigurableFinger: 2 knuckles, no splay
+ */
+template<size_t knuckle_offset, typename CurlCalibrator, typename SplayCalibrator>
+class ConfigurableFinger<false, 2, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {};
+
+/*
+ * ConfigurableFinger: 3 knuckle, no splay
+ */
+template<size_t knuckle_offset, typename CurlCalibrator, typename SplayCalibrator>
+class ConfigurableFinger<false, 3, knuckle_offset, CurlCalibrator, SplayCalibrator> : public Finger {};
+
+/*
+ * SplaySupport: adds splay to any Finger type.
+ * If you are adding a custom finger, see the partially specialized class that adds splay support
+ * to all ConfigurableFingers.
+ */
+template<typename SplayCalibrator, typename BaseFinger>
+class SplaySupport : public BaseFinger {
  public:
-  ConfigurableFinger(ConstructorArgs) : ConfigurableFinger<1, false>(all_args),
+  SplaySupport(ConstructorArgs) : BaseFinger(all_args),
   splay_pin(splay_pin), splay_value(0), splay_calibrator(0, ANALOG_MAX) {}
 
   void readInput() override {
-    ConfigurableFinger<1, false>::readInput();
+    BaseFinger::readInput();
     int new_splay_value = splay_pin->read();
     // Update the calibration
-    if (calibrate) {
+    if (this->calibrate) {
       splay_calibrator.update(new_splay_value);
     }
 
-    if (invert_splay) {
+    if (this->invert_splay) {
       new_splay_value = ANALOG_MAX - new_splay_value;
     }
 
@@ -105,15 +127,17 @@ template<> class ConfigurableFinger<1, true /*enable_splay*/> : public Configura
   }
 
   inline int getEncodedSize() const override {
-    return EncodedInput::CurlSize + EncodedInput::SplaySize - 1;
+    return BaseFinger::getEncodedSize() + EncodedInput::SplaySize - 1;
   }
 
   int encode(char* output) const override {
-    return snprintf(output, getEncodedSize(), (String(EncodedInput::CurlFormat) + String(EncodedInput::SplayFormat)).c_str(), type, value, type, splay_value);
+    int offset = BaseFinger::encode(output);
+    int size = offset + snprintf(output + offset, EncodedInput::SplaySize, EncodedInput::SplayFormat, this->type, splay_value);
+    return size;
   }
 
   void resetCalibration() override {
-    ConfigurableFinger<1, false>::resetCalibration();
+    BaseFinger::resetCalibration();
     splay_calibrator.reset();
   }
 
@@ -124,10 +148,15 @@ template<> class ConfigurableFinger<1, true /*enable_splay*/> : public Configura
  protected:
   AnalogPin* splay_pin;
   int splay_value;
-  MinMaxCalibrator<int> splay_calibrator;
+  SplayCalibrator splay_calibrator;
 };
 
-template<> class ConfigurableFinger<2, false> : public Finger {};
-template<> class ConfigurableFinger<2, true> : public ConfigurableFinger<2, false> {};
-template<> class ConfigurableFinger<3, false> : Finger {};
-template<> class ConfigurableFinger<3, true> : ConfigurableFinger<3, false> {};
+/*
+ * This is a partially specialized class that allows ANY knuckle count, but always has splay enabled.
+ */
+template<size_t knuckle_count, size_t knuckle_offset, typename CurlCalibrator, typename SplayCalibrator>
+class ConfigurableFinger<true, knuckle_count, knuckle_offset, CurlCalibrator, SplayCalibrator> :
+  public SplaySupport<SplayCalibrator, ConfigurableFinger<false, knuckle_count, knuckle_offset, CurlCalibrator, SplayCalibrator>> {
+ public:
+  ConfigurableFinger(ConstructorArgs) : SplaySupport<SplayCalibrator, ConfigurableFinger<false, knuckle_count, knuckle_offset, CurlCalibrator, SplayCalibrator>>(all_args) {}
+};

@@ -30,6 +30,8 @@ struct EncodedInput {
     "(%cAD)%d"
   };
   static constexpr size_t KnuckleSize = 10; // (AAA)XXXX + \0
+  static constexpr size_t KnuckleFingerOffset = 1;
+  static constexpr size_t KnuckleThumbOffset = 0;
 
   // Setup any hardware needed for the input here.
   virtual void setupInput() {};
