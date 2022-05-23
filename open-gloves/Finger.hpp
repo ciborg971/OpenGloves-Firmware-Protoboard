@@ -247,7 +247,7 @@ template<typename SplayCalibrator, typename BaseFinger>
 class SplaySupport : public BaseFinger {
  public:
   SplaySupport(ConstructorArgs) : BaseFinger(all_args),
-  splay_pin(splay_pin), splay_value(0), splay_calibrator(0, ANALOG_MAX) {}
+  splay_pin(splay), splay_value(0), splay_calibrator(0, ANALOG_MAX) {}
 
   void readInput() override {
     BaseFinger::readInput();

@@ -82,8 +82,10 @@ void setup() {
   // Setup the StatusLED.
   led.setup();
 
-  // Setup the multiplexer
-  multiplexer.setup();
+  #if ENABLE_MULTIPLEXER
+    // Setup the multiplexer
+    multiplexer.setup();
+  #endif
 
   if (ALWAYS_CALIBRATING) {
     for (size_t i = 0; i < calibrated_count; i++) {
