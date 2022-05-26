@@ -28,9 +28,9 @@ struct {
 Button calibration_button(EncodedInput::Type::CALIBRATE, PIN_CALIB, INVERT_CALIB);
 
 Button* buttons[BUTTON_COUNT] = {
-  new Button(EncodedInput::Type::A_BTN, PIN_A_BTN, INVERT_A),
-  new Button(EncodedInput::Type::B_BTN, PIN_B_BTN, INVERT_B),
-  new Button(EncodedInput::Type::MENU, PIN_MENU_BTN, INVERT_MENU),
+  new Button(EncodedInput::Type::A_BTN, new PIN_A_BTN, INVERT_A),
+  new Button(EncodedInput::Type::B_BTN, new PIN_B_BTN, INVERT_B),
+  new Button(EncodedInput::Type::MENU, new PIN_MENU_BTN, INVERT_MENU),
   &calibration_button,
   #if ENABLE_JOYSTICK
     new Button(EncodedInput::Type::JOY_BTN, PIN_JOY_BTN, INVERT_JOY),

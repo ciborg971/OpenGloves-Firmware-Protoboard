@@ -12,7 +12,7 @@ class HapticMotor : public DecodedOuput {
 
   void setupOutput() override {
     pinMode(motor_pin, OUTPUT);
-    digitalWrite(motor_pin, LOW);
+    digitalWrite(motor_pin, INVERT_HAPTICS);
   }
 
   void decodeToOuput(const char* input) override {
@@ -37,10 +37,10 @@ class HapticMotor : public DecodedOuput {
   void updateOutput() override {
     if (duration > 0 && millis() < haptic_start + duration) {
       // If there is duration remaining, keep the motor on.
-      digitalWrite(motor_pin, HIGH);
+      digitalWrite(motor_pin, !INVERT_HAPTICS);
     } else {
       // Duration has expired, keep the motor off.
-      digitalWrite(motor_pin, LOW);
+      digitalWrite(motor_pin, INVERT_HAPTICS);
       duration = 0;
     }
   }
